@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spain · Summer 2026 — The Kochtanek Family</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Crimson+Pro:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f4ed;
+    --paper: #fffdf8;
+    --ink: #2b2620;
+    --muted: #6f685c;
+    --hint: #968d7e;
+    --border: rgba(43, 38, 32, 0.12);
+    --border-strong: rgba(43, 38, 32, 0.22);
+    --bcn: #185fa5; --bcn-bg: #e6f1fb;
+    --mrb: #0f6e56; --mrb-bg: #e1f5ee;
+    --sev: #854f0b; --sev-bg: #faeeda;
+    --mad: #993c1d; --mad-bg: #faece7;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Crimson Pro', Georgia, serif;
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 20px 60px;
+  }
+
+  /* Header */
+  .hero {
+    text-align: center;
+    padding: 3rem 0 2rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 2rem;
+  }
+
+  .hero .eyebrow {
+    font-size: 13px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--hint);
+    margin-bottom: 12px;
+    font-weight: 400;
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 42px;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+
+  .hero .family {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 18px;
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+  }
+
+  .meta-row {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .meta-pill {
+    font-size: 14px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .meta-pill svg { width: 16px; height: 16px; opacity: 0.7; }
+
+  /* Nav */
+  .nav-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 2.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    padding: 14px 0;
+    z-index: 10;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-btn {
+    padding: 7px 16px;
+    border: 1px solid var(--border-strong);
+    border-radius: 24px;
+    background: transparent;
+    font-family: 'Crimson Pro', serif;
+    font-size: 15px;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.18s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .nav-btn svg { width: 15px; height: 15px; }
+
+  .nav-btn:hover { background: var(--paper); color: var(--ink); }
+  .nav-btn.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+  /* City section */
+  .city-section { display: none; animation: fade 0.3s ease; }
+  .city-section.visible { display: block; }
+
+  @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  .city-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .city-badge {
+    width: 54px; height: 54px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .city-badge svg { width: 26px; height: 26px; }
+  .city-badge.bcn { background: var(--bcn-bg); color: var(--bcn); }
+  .city-badge.mrb { background: var(--mrb-bg); color: var(--mrb); }
+  .city-badge.sev { background: var(--sev-bg); color: var(--sev); }
+  .city-badge.mad { background: var(--mad-bg); color: var(--mad); }
+
+  .city-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 30px;
+    font-weight: 400;
+    line-height: 1.1;
+  }
+  .city-dates { font-size: 14px; color: var(--muted); margin-top: 2px; letter-spacing: 0.02em; }
+
+  .city-intro {
+    font-size: 17px;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 1.75rem;
+    font-weight: 300;
+  }
+
+  .flight-card {
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 1.75rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    flex-wrap: wrap;
+  }
+  .flight-card svg { width: 17px; height: 17px; color: var(--muted); flex-shrink: 0; }
+  .flight-card .code { font-weight: 500; }
+  .flight-card .det { color: var(--muted); font-size: 13px; }
+
+  /* Day cards */
+  .day-card {
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    margin-bottom: 14px;
+    overflow: hidden;
+    transition: border-color 0.18s;
+  }
+  .day-card.open { border-color: var(--border-strong); }
+
+  .day-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 18px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .day-header:hover { background: rgba(43,38,32,0.02); }
+
+  .day-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--muted);
+    min-width: 54px;
+  }
+  .day-label { flex: 1; font-size: 17px; font-weight: 500; }
+
+  .day-tag {
+    font-size: 12px;
+    padding: 4px 11px;
+    border-radius: 12px;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+  .tag-arrive { background: var(--bcn-bg); color: var(--bcn); }
+  .tag-explore { background: #eaf3de; color: #3b6d11; }
+  .tag-beach { background: var(--mrb-bg); color: var(--mrb); }
+  .tag-excursion { background: var(--sev-bg); color: var(--sev); }
+  .tag-travel { background: #f1efe8; color: #444441; }
+  .tag-culture { background: var(--mad-bg); color: var(--mad); }
+
+  .chevron { width: 18px; height: 18px; color: var(--muted); transition: transform 0.2s; flex-shrink: 0; }
+  .day-card.open .chevron { transform: rotate(180deg); }
+
+  .day-body { display: none; padding: 0 18px 18px; }
+  .day-card.open .day-body { display: block; }
+
+  .activity-list { list-style: none; border-top: 1px solid var(--border); padding-top: 14px; }
+
+  .activity-item {
+    display: flex;
+    gap: 14px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+  }
+  .activity-item:last-child { border-bottom: none; }
+
+  .activity-time {
+    font-size: 13px;
+    color: var(--hint);
+    min-width: 60px;
+    padding-top: 3px;
+    font-weight: 300;
+  }
+  .activity-icon { width: 18px; height: 18px; color: var(--muted); margin-top: 3px; flex-shrink: 0; }
+  .activity-content { flex: 1; }
+  .activity-name { font-size: 16px; font-weight: 500; line-height: 1.4; }
+  .activity-desc { font-size: 15px; color: var(--muted); line-height: 1.55; margin-top: 3px; font-weight: 300; }
+
+  .tip-box {
+    background: var(--mrb-bg);
+    border-left: 3px solid var(--mrb);
+    border-radius: 0 8px 8px 0;
+    padding: 12px 16px;
+    margin-top: 16px;
+    font-size: 14px;
+    color: #0a4a3a;
+    line-height: 1.6;
+    font-weight: 300;
+  }
+  .tip-box strong { font-weight: 500; }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+    color: var(--hint);
+    font-size: 14px;
+    font-weight: 300;
+  }
+
+  .checklist {
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.5rem 1.75rem;
+    margin-top: 2.5rem;
+  }
+  .checklist h3 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 400;
+    font-size: 20px;
+    margin-bottom: 1rem;
+  }
+  .checklist ul { list-style: none; }
+  .checklist li {
+    display: flex;
+    gap: 10px;
+    padding: 7px 0;
+    font-size: 15px;
+    color: var(--muted);
+    font-weight: 300;
+    align-items: flex-start;
+  }
+  .checklist li svg { width: 16px; height: 16px; margin-top: 3px; flex-shrink: 0; color: var(--sev); }
+  .checklist li strong { color: var(--ink); font-weight: 500; }
+
+  @media (max-width: 520px) {
+    .hero h1 { font-size: 32px; }
+    .city-title { font-size: 24px; }
+    .activity-time { min-width: 50px; font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="hero">
+    <div class="eyebrow">Family Itinerary</div>
+    <h1>Spain · Summer 2026</h1>
+    <div class="family">The Kochtanek Family</div>
+    <div class="meta-row">
+      <span class="meta-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> July 15–28</span>
+      <span class="meta-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2M16 3.13a4 4 0 0 1 0 7.75M21 21v-2a4 4 0 0 0-3-3.87"/></svg> Family of 5</span>
+      <span class="meta-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Barcelona · Marbella · Sevilla · Madrid</span>
+    </div>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn active" data-city="bcn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/></svg> Barcelona</button>
+    <button class="nav-btn" data-city="mrb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="3"/><path d="M3 21c4-3 14-3 18 0M12 11v6"/></svg> Marbella</button>
+    <button class="nav-btn" data-city="sev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6"/></svg> Sevilla</button>
+    <button class="nav-btn" data-city="mad"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 19h18l-2-9-4 3-3-6-3 6-4-3z"/></svg> Madrid</button>
+  </div>
+
+  <!-- BARCELONA -->
+  <section class="city-section visible" id="city-bcn">
+    <div class="city-header">
+      <div class="city-badge bcn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/></svg></div>
+      <div>
+        <div class="city-title">Barcelona</div>
+        <div class="city-dates">July 15–17 · 2 nights</div>
+      </div>
+    </div>
+    <div class="flight-card">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 16l20-5-7-2-3-6-2 1 1 4-5 1-2-2-1 1 2 3z"/></svg>
+      <span class="code">STL → PHL → BCN</span>
+      <span class="det">AA 2720 + AA 742 · Departs 11:20am Jul 14 · Arrives 6:45am Jul 15</span>
+    </div>
+    <p class="city-intro">Landing exhausted after an overnight flight — keep it simple. One iconic thing per day, lots of wandering, and don't stress about seeing everything. Barcelona rewards slowness.</p>
+    <div id="days-bcn"></div>
+  </section>
+
+  <!-- MARBELLA -->
+  <section class="city-section" id="city-mrb">
+    <div class="city-header">
+      <div class="city-badge mrb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="3"/><path d="M3 21c4-3 14-3 18 0M12 11v6"/></svg></div>
+      <div>
+        <div class="city-title">Marbella</div>
+        <div class="city-dates">July 17–22 · 5 nights · Costa del Sol base</div>
+      </div>
+    </div>
+    <p class="city-intro">Your anchor. Five nights on the Costa del Sol with a car gives you serious flexibility — beach days, day trips, late lunches, early swims. Don't over-programme it. The Mediterranean in July is perfect.</p>
+    <div id="days-mrb"></div>
+  </section>
+
+  <!-- SEVILLA -->
+  <section class="city-section" id="city-sev">
+    <div class="city-header">
+      <div class="city-badge sev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6"/></svg></div>
+      <div>
+        <div class="city-title">Sevilla</div>
+        <div class="city-dates">July 22–25 · 3 nights</div>
+      </div>
+    </div>
+    <p class="city-intro">The most romantic and dramatic city in Spain. Enormous history, incredible food, and a pace that suits families. Remember: siesta is real here (2–5pm everything closes), dinner starts at 9pm, and tapas are free in some bars.</p>
+    <div id="days-sev"></div>
+  </section>
+
+  <!-- MADRID -->
+  <section class="city-section" id="city-mad">
+    <div class="city-header">
+      <div class="city-badge mad"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 19h18l-2-9-4 3-3-6-3 6-4-3z"/></svg></div>
+      <div>
+        <div class="city-title">Madrid</div>
+        <div class="city-dates">July 25–28 · 2 nights · Fly home Jul 28</div>
+      </div>
+    </div>
+    <p class="city-intro">Two full days in the capital. Madrid is cooler than Sevilla, greener, and has a completely different energy. World-class museums, incredible food markets, and a park that could absorb a whole day. Relaxed final stretch before heading home.</p>
+    <div id="days-mad"></div>
+  </section>
+
+  <div class="checklist">
+    <h3>Book these now</h3>
+    <ul>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 6L9 17l-5-5"/></svg><span><strong>Sagrada Família & Park Güell</strong> — timed-entry tickets sell out weeks ahead in July</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 6L9 17l-5-5"/></svg><span><strong>Real Alcázar, Sevilla</strong> — book advance entry to skip the lines</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 6L9 17l-5-5"/></svg><span><strong>Flamenco show</strong> — Casa de la Memoria or Museo del Baile Flamenco, early ~7pm slot</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 6L9 17l-5-5"/></svg><span><strong>BCN → Málaga flight</strong> — Vueling or Iberia, ~1hr, book early for peak July</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 6L9 17l-5-5"/></svg><span><strong>Rental car</strong> — pick up at Málaga airport, drop in Sevilla</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 6L9 17l-5-5"/></svg><span><strong>AVE train Sevilla → Madrid</strong> — ~2.5hrs on Renfe.com, buy in advance</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 6L9 17l-5-5"/></svg><span><strong>Royal Palace, Madrid</strong> — online tickets recommended</span></li>
+    </ul>
+  </div>
+
+  <div class="footer">
+    Confirmation SKHETT · Kyle, Alyssa, Olivia, Leo & Kennedy Kochtanek<br>
+    Tap any city above, then tap a day to expand it.
+  </div>
+
+</div>
+
+<script>
+var ICONS = {
+  plane_arrival: '<path d="M2 22h20M3 9l2 1 5-2-3-8 2-.5 5 6 5-1.5a2 2 0 0 1 1 4l-17 5z"/>',
+  plane_departure: '<path d="M2 22h20M3 14l18-5a2 2 0 0 0-1-4l-5 1.5-5-6-2 .5 3 8-5 2-2-1-1.5 1z"/>',
+  bed: '<path d="M2 18v-6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v6M2 14h20M6 10V7a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v3M2 18v2M22 18v2"/>',
+  walk: '<circle cx="13" cy="4" r="2"/><path d="M11 7l-2 4 3 2v6M13 13l3 1 1 3M9 11l-2 1-1 4"/>',
+  food: '<path d="M3 2v7a3 3 0 0 0 6 0V2M6 2v20M16 2c-2 0-3 2-3 5s1 4 3 4 3-1 3-4-1-5-3-5zM16 11v11"/>',
+  church: '<path d="M12 2v6M9 5h6M5 22V11l7-4 7 4v11M9 22v-5a3 3 0 0 1 6 0v5"/>',
+  tree: '<path d="M12 2L7 9h3l-4 6h5v7h2v-7h5l-4-6h3z"/>',
+  beach: '<circle cx="8" cy="7" r="3"/><path d="M3 21c5-4 13-4 18 0M11 10l6 11"/>',
+  car: '<path d="M5 17H3v-5l2-5h14l2 5v5h-2M5 17a2 2 0 0 0 4 0M15 17a2 2 0 0 0 4 0M5 12h14"/>',
+  estate: '<path d="M3 21h18M5 21V7l7-4 7 4v14M9 11h2M13 11h2M9 15h2M13 15h2"/>',
+  sunrise: '<path d="M12 2v4M5 10a7 7 0 0 1 14 0M2 18h20M4 14l-1-1M20 14l1-1M22 18H2"/>',
+  moon: '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>',
+  bridge: '<path d="M2 9c4 0 4 4 10 4s6-4 10-4M2 9v9M22 9v9M8 13v5M16 13v5M12 13v5"/>',
+  home: '<path d="M3 11l9-7 9 7M5 10v10h14V10"/>',
+  pin: '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>',
+  sail: '<path d="M2 20h20M4 20l8-16v16M12 8l6 12M3 17h16"/>',
+  swim: '<circle cx="6" cy="6" r="2"/><path d="M2 16c2-1 3 1 5 1s3-2 5 0 3 1 5 0 3-1 4-1M9 11l4-3 3 2"/>',
+  castle: '<path d="M3 21V8l2 1V5l3 1V3l4 1 4-1v3l3-1v4l2-1v13M9 21v-5h6v5"/>',
+  arch: '<path d="M4 21V9a8 8 0 0 1 16 0v12M4 21h16M9 21v-7a3 3 0 0 1 6 0v7"/>',
+  zzz: '<path d="M4 8h6l-6 8h6M14 4h6l-6 7h6"/>',
+  music: '<circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/><path d="M9 18V5l12-2v13"/>',
+  train: '<rect x="4" y="3" width="16" height="14" rx="2"/><path d="M4 11h16M8 21l-2-4M16 21l2-4"/><circle cx="8.5" cy="14" r="1"/><circle cx="15.5" cy="14" r="1"/>',
+  skyscraper: '<path d="M6 21V3h6v18M12 21V8h6v13M3 21h18M9 7h0M9 11h0M9 15h0"/>',
+  palette: '<path d="M12 2a10 10 0 0 0 0 20c1 0 2-1 2-2 0-1-1-1-1-2s1-2 2-2h2a5 5 0 0 0 5-5c0-5-5-9-10-9z"/><circle cx="7" cy="11" r="1"/><circle cx="12" cy="7" r="1"/><circle cx="16" cy="11" r="1"/>',
+  trees: '<path d="M8 2L4 8h3l-3 5h4v9h2v-9h4l-3-5h3zM17 8l-2 3h2v11h0"/>',
+  shopping: '<path d="M5 8h14l-1 13H6zM9 8V6a3 3 0 0 1 6 0v2"/>',
+  happy: '<circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h0M15 9h0"/>',
+  star: '<path d="M12 2l3 7 7 .5-5 4.5 1.5 7L12 17l-6.5 4 1.5-7-5-4.5 7-.5z"/>',
+  coffee: '<path d="M4 8h13v5a5 5 0 0 1-10 0zM17 9h2a2 2 0 0 1 0 4h-2M5 2v2M9 2v2M13 2v2M3 21h16"/>',
+  map: '<path d="M9 3L3 5v16l6-2 6 2 6-2V3l-6 2-6-2zM9 3v16M15 5v16"/>',
+  church2: '<path d="M12 2l3 4v3l3 2v10H6V11l3-2V6z"/>'
+};
+
+function svg(name) {
+  return '<svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">' + (ICONS[name]||'') + '</svg>';
+}
+
+var DATA = {
+  bcn: [
+    { id:'d1', date:'Jul 15', label:'Arrival & recovery', tag:'arrive', acts:[
+      {t:'6:45am', i:'plane_arrival', n:'Land at Barcelona El Prat (BCN)', d:'Clear customs, grab bags. Aerobus or taxi to the hotel is ~30–40 min. Aerobus is cheaper, runs every 5 min to Plaça Catalunya.'},
+      {t:'Morning', i:'bed', n:'Check in & rest', d:'Early check-in if possible, or leave bags and walk. Everyone will be running on fumes — don\'t over-plan this morning.'},
+      {t:'Afternoon', i:'walk', n:'Las Ramblas & Gothic Quarter', d:'Easy, flat, atmospheric. Wander the medieval lanes, grab gelato, let the kids run in the squares. La Boqueria market if it isn\'t too crowded.'},
+      {t:'Evening', i:'food', n:'Early dinner & early bed', d:'Eat at 7pm (early by Spanish standards — locals eat at 9pm+). Tapas near the hotel, then everyone to bed early.'}
+    ]},
+    { id:'d2', date:'Jul 16', label:'Gaudí day', tag:'explore', acts:[
+      {t:'Morning', i:'church', n:'Sagrada Família', d:'The crown jewel. Book timed-entry tickets in advance — lines without them are brutal in July. Budget 1.5–2 hrs. Kids love the wild architecture.'},
+      {t:'Late morning', i:'tree', n:'Park Güell', d:'15 min by taxi from Sagrada Família. Tiled terraces and the mosaic dragon stairs are a hit with kids. Also book in advance — the monumental zone is ticketed.'},
+      {t:'Afternoon', i:'beach', n:'Barceloneta Beach', d:'Easy metro ride. Let the kids burn energy in the water while you decompress. Paella at a beachfront chiringuito.'},
+      {t:'Evening', i:'walk', n:'Barceloneta neighbourhood', d:'Seafood-heavy, casual dinner with great energy. Kids welcome everywhere.'}
+    ], tip:'<strong>Tip:</strong> July heat peaks 2–4pm. Plan the beach for that window, sightsee in the morning and evening.'},
+    { id:'d3', date:'Jul 17', label:'Fly to Málaga · drive to Marbella', tag:'travel', acts:[
+      {t:'Morning', i:'plane_departure', n:'Fly BCN → AGP (Málaga)', d:'Vueling and Iberia fly this route frequently. ~1hr flight. Book early — July is peak. Pick up the rental car at Málaga airport.'},
+      {t:'Afternoon', i:'car', n:'Drive to Marbella', d:'~45 min along the AP-7 coastal highway, Mediterranean on your left. Stop at a roadside chiringuito for lunch if hungry.'},
+      {t:'Afternoon', i:'estate', n:'Check in & orient', d:'Drop bags, find the beach, grocery run if you\'re in a villa. Marbella\'s old town is worth an evening stroll — whitewashed lanes and the Plaza de los Naranjos.'}
+    ]}
+  ],
+  mrb: [
+    { id:'d4', date:'Jul 18', label:'Marbella beach day', tag:'beach', acts:[
+      {t:'Morning', i:'sunrise', n:'Playa de la Fontanilla', d:'Marbella\'s most popular town beach. Wide, sandy, calm — ideal for kids. Loungers for hire. Arrive by 9am for a good spot in peak July.'},
+      {t:'Midday', i:'food', n:'Chiringuito lunch on the beach', d:'Grilled fish, espetos (sardines on a skewer), cold beer and Fanta Limón for the kids. Peak Spain.'},
+      {t:'Afternoon', i:'walk', n:'Old Town stroll', d:'The casco antiguo is small and walkable. Plaza de los Naranjos, whitewashed lanes, ice cream, window shopping.'},
+      {t:'Evening', i:'moon', n:'Paseo Marítimo walk', d:'The promenade comes alive at dusk. Spanish families out in full force with kids — you\'ll fit right in at 9pm.'}
+    ]},
+    { id:'d5', date:'Jul 19', label:'Day trip: Ronda', tag:'excursion', acts:[
+      {t:'8:30am', i:'car', n:'Drive to Ronda', d:'~1hr through the mountains on the A-397. Spectacular winding road. Pack snacks for the kids.'},
+      {t:'10am', i:'bridge', n:'Puente Nuevo', d:'The iconic bridge spanning a 120m gorge. Walk across and look down — dramatic and completely safe. One of the most memorable views in Spain.'},
+      {t:'Late morning', i:'walk', n:'Old town & La Ciudad', d:'Wander the ancient Arab quarter below the bridge. Ronda is one of Spain\'s oldest cities — extraordinary cliff-edge views.'},
+      {t:'1pm', i:'food', n:'Lunch in Ronda', d:'Rabo de toro (oxtail stew) is the local speciality. Try Restaurante Albacara or a terrace near the bridge for the view.'},
+      {t:'3pm', i:'car', n:'Drive back to Marbella', d:'Back for a late afternoon swim before dinner. A full but not exhausting day.'}
+    ], tip:'<strong>Ronda tip:</strong> Go early — it gets extremely hot and crowded by midday in July. Being there by 10am means the best viewpoints to yourselves.'},
+    { id:'d6', date:'Jul 20', label:'Beach & Puerto Banús', tag:'beach', acts:[
+      {t:'Morning', i:'beach', n:'Playa de Nagüeles', d:'A quieter alternative to Fontanilla — clear water, less crowded, pine trees. 5 min drive from central Marbella, a family favourite.'},
+      {t:'Afternoon', i:'sail', n:'Puerto Banús', d:'5 min drive west. The mega-yacht marina is outrageously fun to walk. Ice cream, window shopping, watching the boats. Kid-friendly despite the glam reputation.'},
+      {t:'Late afternoon', i:'swim', n:'Beach club afternoon', d:'Several clubs around Puerto Banús have family-friendly pools and sun beds — La Sala by the Sea or Sisu\'s beach area.'}
+    ]},
+    { id:'d7', date:'Jul 21', label:'Day trip: Nerja & Frigiliana', tag:'excursion', acts:[
+      {t:'8:30am', i:'car', n:'Drive to Frigiliana (45 min)', d:'One of the most beautiful white villages in Andalucía. Steep cobbled lanes, flowerpots, local honey and ceramics.'},
+      {t:'9:30am', i:'home', n:'Explore Frigiliana', d:'Give it a couple of hours. The Moorish barrio at the top is spectacular. Buy miel de caña (sugarcane honey) — a great souvenir.'},
+      {t:'Noon', i:'pin', n:'Drive down to Nerja (10 min)', d:'The Balcón de Europa viewpoint is stunning — the Mediterranean in both directions. Grab ice cream from ALBI.'},
+      {t:'Afternoon', i:'beach', n:'Burriana Beach, Nerja', d:'Wide, sandy, the best beach in the area. Easy walk from the Balcón. Lunch at a chiringuito on the sand.'},
+      {t:'Late afternoon', i:'car', n:'Drive back to Marbella (~1hr)', d:'Easy coastal highway. Stop at a supermarket if you want a relaxed dinner in.'}
+    ]},
+    { id:'d8', date:'Jul 22', label:'Final beach morning · drive to Sevilla', tag:'travel', acts:[
+      {t:'Morning', i:'beach', n:'Last beach morning', d:'One final dip. Check out, load the car, grab coffee and pastries from a local café.'},
+      {t:'Late morning', i:'car', n:'Drive Marbella → Sevilla (~2.5hrs)', d:'A-92 north through the Andalucían countryside — rolling hills and olive groves. Stop in Antequera for coffee if needed, a lovely town en route.'},
+      {t:'Afternoon', i:'arch', n:'Arrive Sevilla · check in', d:'Park at the hotel and leave the car there — Sevilla\'s centre is extremely walkable and driving the old city is a nightmare.'},
+      {t:'Late afternoon', i:'walk', n:'Plaza de España first look', d:'If energy allows — 10 min walk from most central hotels. One of the most jaw-dropping squares in Europe. Rent a rowboat; kids love it.'}
+    ]}
+  ],
+  sev: [
+    { id:'d9', date:'Jul 23', label:'Real Alcázar & city centre', tag:'culture', acts:[
+      {t:'Morning', i:'castle', n:'Real Alcázar', d:'A Moorish royal palace with extraordinary tilework and gardens — the Water Gardens of Dorne from Game of Thrones. Book ahead. Budget 2 hrs; the gardens alone are worth it for kids.'},
+      {t:'Midday', i:'food', n:'Tapas lunch in Barrio Santa Cruz', d:'The old Jewish quarter around the Alcázar. Dozens of tapas bars and pretty courtyards. Order drinks — dishes arrive automatically at many bars here.'},
+      {t:'2–5pm', i:'zzz', n:'Siesta / pool time', d:'July in Sevilla is extreme — often 40°C. Don\'t fight it. Retreat, cool off, let the kids rest. Spain does this for good reason.'},
+      {t:'Evening', i:'arch', n:'Cathedral & Giralda tower', d:'The largest Gothic cathedral in the world. The Giralda has ramps instead of stairs (built for horses) so kids manage it easily. Stunning views. Go at 6pm when it cools.'},
+      {t:'9pm', i:'food', n:'Dinner in Triana', d:'Cross the river to Sevilla\'s bohemian barrio — more authentic, less touristy. Great for a proper family dinner.'}
+    ], tip:'<strong>Heat warning:</strong> July in Sevilla regularly hits 40–42°C. Start before 10am, retreat 2–5pm, back out at 6pm. Water bottles for everyone and obsessive sunscreen.'},
+    { id:'d10', date:'Jul 24', label:'Plaza de España · flamenco · tapas', tag:'culture', acts:[
+      {t:'Morning', i:'arch', n:'Plaza de España', d:'The most spectacular square in Spain — a semicircular palace with a canal, bridges, and tiled alcoves for every Spanish province. Rent the rowboats. Kids adore it.'},
+      {t:'Late morning', i:'trees', n:'Parque María Luisa', d:'Adjacent to the plaza — a huge shaded park, perfect for letting the kids run. Peacocks roam freely. Bring snacks.'},
+      {t:'Siesta', i:'zzz', n:'Hotel rest 2–6pm', d:'Use this time to book tonight\'s flamenco if you haven\'t. Casa de la Memoria or Museo del Baile Flamenco — both family-friendly, early ~7pm shows.'},
+      {t:'7pm', i:'music', n:'Flamenco show', d:'One of the most powerful live experiences anywhere — intense, emotional, visceral. Kids 5–10 often find it mesmerising; the percussion and drama grab them.'},
+      {t:'9pm', i:'food', n:'Late dinner in Santa Cruz', d:'After the show. Lean into the late-dinner culture tonight — alive streets, perfect temperature, peak Sevilla.'}
+    ]},
+    { id:'d11', date:'Jul 25', label:'Sevilla morning · AVE to Madrid', tag:'travel', acts:[
+      {t:'Morning', i:'walk', n:'Final Sevilla morning', d:'Return the rental car, check out. Explore the Metropol Parasol (Las Setas) — a bizarre but wonderful wooden structure with great views. Kids love climbing it.'},
+      {t:'Midday', i:'train', n:'AVE high-speed train to Madrid', d:'~2.5hrs from Santa Justa station. Book on Renfe.com in advance for the best price. First class is worth it for the family. Arrives Madrid Atocha.'},
+      {t:'Afternoon', i:'skyscraper', n:'Arrive Madrid · check in', d:'Metro from Atocha is simple — most central hotels are 20 min away. Afternoon free: explore your neighbourhood, coffee on a terrace.'}
+    ]}
+  ],
+  mad: [
+    { id:'d12', date:'Jul 26', label:'El Prado · Retiro Park', tag:'culture', acts:[
+      {t:'Morning', i:'palette', n:'Museo del Prado', d:'One of the world\'s great art museums. For kids, focus on the dramatic Velázquez and Goya rooms — Las Meninas always gets a reaction. 2 hrs is plenty.'},
+      {t:'Midday', i:'trees', n:'Retiro Park', d:'Next to the Prado. Enormous and green. Rent a rowboat on the lake (a tradition), find the Crystal Palace, let the kids run loose.'},
+      {t:'Afternoon', i:'food', n:'Mercado de San Miguel', d:'Madrid\'s famous covered market near Plaza Mayor. High-quality tapas stalls — jamón, seafood, patatas bravas, croquetas. Great for a grazing family lunch.'},
+      {t:'Afternoon', i:'map', n:'Plaza Mayor & Sol', d:'The historic heart of Madrid. Arcaded square, street performers, churros con chocolate at Chocolatería San Ginés (open since 1894).'},
+      {t:'Evening', i:'food', n:'Dinner in Malasaña or Chueca', d:'Madrid\'s hip neighbourhoods — lively, kid-friendly, great restaurants. End with a walk down Gran Vía, lit up beautifully at night.'}
+    ]},
+    { id:'d13', date:'Jul 27', label:'Royal Palace · souvenir day', tag:'explore', acts:[
+      {t:'Morning', i:'castle', n:'Palacio Real', d:'Official residence of the Spanish royal family — the largest royal palace in Western Europe by floor area. The throne room and armory impress kids. Book online.'},
+      {t:'Midday', i:'shopping', n:'Souvenirs & Lavapiés', d:'The neighbourhood south of the palace has great independent shops and a local feel. Pick up last-minute gifts — ceramics, fans, local food.'},
+      {t:'Afternoon', i:'happy', n:'Free afternoon — kids\' choice', d:'Let the kids pick. Warner Bros. Park is 30 min south for a theme-park day, or a pool afternoon, or more wandering. Last full day — keep it light.'},
+      {t:'Evening', i:'star', n:'Celebratory final dinner', d:'Treat yourselves. Lhardy (historic, old-world setting the kids will love) or a great steakhouse — Casa Julián de Tolosa for txuleton beef.'}
+    ]},
+    { id:'d14', date:'Jul 28', label:'Fly home · MAD → ORD → STL', tag:'travel', acts:[
+      {t:'Morning', i:'coffee', n:'Final Spanish breakfast', d:'Tostada con tomate and café con leche. A ritual worth having one last time.'},
+      {t:'Late morning', i:'car', n:'Transfer to Madrid–Barajas (MAD)', d:'~30–40 min by taxi or Metro (Line 8 direct). Allow 3 hours before departure for international check-in. Flight is AA 125 at 1:35pm.'},
+      {t:'1:35pm', i:'plane_departure', n:'MAD → ORD → STL', d:'AA 125 to Chicago O\'Hare (arrive 4pm), then AA 439 to St. Louis (depart 7:04pm, arrive 8:26pm). Home by bedtime.'}
+    ]}
+  ]
+};
+
+function renderDays(city) {
+  var html = '';
+  DATA[city].forEach(function(day) {
+    var acts = '';
+    day.acts.forEach(function(a) {
+      acts += '<li class="activity-item"><span class="activity-time">'+a.t+'</span>'+svg(a.i)+
+        '<div class="activity-content"><div class="activity-name">'+a.n+'</div>'+
+        '<div class="activity-desc">'+a.d+'</div></div></li>';
+    });
+    var tip = day.tip ? '<div class="tip-box">'+day.tip+'</div>' : '';
+    html += '<div class="day-card" data-id="'+day.id+'">'+
+      '<div class="day-header"><span class="day-num">'+day.date+'</span>'+
+      '<span class="day-label">'+day.label+'</span>'+
+      '<span class="day-tag tag-'+day.tag+'">'+day.tag.charAt(0).toUpperCase()+day.tag.slice(1)+'</span>'+
+      '<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>'+
+      '<div class="day-body"><ul class="activity-list">'+acts+'</ul>'+tip+'</div></div>';
+  });
+  document.getElementById('days-'+city).innerHTML = html;
+}
+
+['bcn','mrb','sev','mad'].forEach(renderDays);
+
+document.querySelectorAll('.nav-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var city = btn.getAttribute('data-city');
+    document.querySelectorAll('.city-section').forEach(function(s){ s.classList.remove('visible'); });
+    document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.remove('active'); });
+    document.getElementById('city-'+city).classList.add('visible');
+    btn.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+});
+
+document.addEventListener('click', function(e) {
+  var header = e.target.closest('.day-header');
+  if (header) header.parentElement.classList.toggle('open');
+});
+</script>
+</body>
+</html>
