@@ -1,0 +1,8 @@
+{
+  "_comment": "Google Drive file IDs already turned into bookings. The daily auto-check reads this so the same confirmation is never logged twice. 'ignore' lists files in the folder that are NOT bookings (e.g. the READ ME).",
+  "folderId": "1XIbsGonqKziJfbSFFLbQ9i0cF5h6x6wd",
+  "ignore": [
+    "1RqijY1tNEhREKdMqa6pVAWt5T8WCMNJ44iDluSGzos8"
+  ],
+  "processed": []
+}
