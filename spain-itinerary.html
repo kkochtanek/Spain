@@ -22,6 +22,37 @@
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
+  /* Password gate */
+  .gate {
+    position: fixed; inset: 0; z-index: 100;
+    background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  body.unlocked .gate { display: none; }
+  .gate-box {
+    background: var(--paper); border: 1px solid var(--border);
+    border-radius: 16px; padding: 2.5rem 2rem; max-width: 360px; width: 100%;
+    text-align: center;
+  }
+  .gate-eyebrow {
+    font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--hint); margin-bottom: 10px;
+  }
+  .gate-box h2 {
+    font-family: 'Playfair Display', serif; font-weight: 400; font-size: 28px;
+    margin-bottom: 8px;
+  }
+  .gate-box p { font-size: 15px; color: var(--muted); margin-bottom: 1.25rem; font-weight: 300; }
+  .gate-box input {
+    font-family: 'Crimson Pro', serif; font-size: 16px; text-align: center;
+    width: 100%; padding: 10px 12px; margin-bottom: 12px;
+    background: var(--bg); border: 1px solid var(--border-strong); border-radius: 10px;
+  }
+  .gate-box .btn { width: 100%; }
+  .gate-error { color: var(--mad); font-size: 14px; margin-top: 12px; display: none; }
+  .gate-error.show { display: block; }
+
   body {
     font-family: 'Crimson Pro', Georgia, serif;
     background: var(--bg);
@@ -456,6 +487,16 @@
 </style>
 </head>
 <body>
+<div class="gate" id="gate">
+  <form class="gate-box" id="gate-form">
+    <div class="gate-eyebrow">The Kochtanek Family</div>
+    <h2>Spain · Summer 2026</h2>
+    <p>Enter the family password to open the itinerary.</p>
+    <input type="password" id="gate-input" placeholder="Password" autocomplete="current-password" autofocus>
+    <button type="submit" class="btn">Unlock</button>
+    <div class="gate-error" id="gate-error">That's not it — try again.</div>
+  </form>
+</div>
 <div class="container">
 
   <div class="hero">
@@ -906,6 +947,26 @@ var SUGGESTIONS = {
   }
 };
 
+/* ---- Known confirmed bookings (seeded once) ---- */
+var KNOWN_BOOKINGS = [
+  { id:'seed-flight-out', status:'booked', type:'flight', city:'bcn', addedBy:'Kyle',
+    title:'STL → PHL → BCN (outbound)', date:'Jul 14–15', time:'Dep 11:20am', cost:'', confirmation:'SKHETT',
+    notes:'AA 2720 STL→PHL, then AA 742 PHL→BCN. Departs 11:20am Jul 14, arrives Barcelona 6:45am Jul 15 (overnight flight).' },
+  { id:'seed-flight-home', status:'booked', type:'flight', city:'mad', addedBy:'Kyle',
+    title:'MAD → ORD → STL (return)', date:'Jul 28', time:'Dep 1:35pm', cost:'', confirmation:'SKHETT',
+    notes:"AA 125 MAD→Chicago O'Hare (arrive 4pm), then AA 439 ORD→STL (dep 7:04pm, arrive 8:26pm). Home by bedtime." }
+];
+
+function seedKnownBookings() {
+  if (!store || !store.ensure) return;
+  if (localStorage.getItem('spain_seeded_v1')) return;
+  KNOWN_BOOKINGS.forEach(function(b){
+    var o = Object.assign({}, b); delete o.id; o.seeded = true;
+    store.ensure(b.id, o);
+  });
+  localStorage.setItem('spain_seeded_v1', '1');
+}
+
 /* ---- Storage: Firebase if configured, otherwise this device ---- */
 var BOOKINGS = [];
 var store = null;
@@ -921,14 +982,20 @@ function makeLocalStore() {
     subscribe: function(cb){ subs.push(cb); cb(read()); },
     add: function(o){ var a = read(); o.id = 'b' + Date.now() + Math.random().toString(36).slice(2,6); a.push(o); write(a); emit(); },
     update: function(id, o){ write(read().map(function(x){ return x.id === id ? Object.assign({}, x, o) : x; })); emit(); },
-    remove: function(id){ write(read().filter(function(x){ return x.id !== id; })); emit(); }
+    remove: function(id){ write(read().filter(function(x){ return x.id !== id; })); emit(); },
+    ensure: function(id, o){ var a = read(); if (!a.some(function(x){ return x.id === id; })) { a.push(Object.assign({ id: id }, o)); write(a); emit(); } }
   };
 }
 
 async function makeFirebaseStore(cfg) {
   var appMod = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js');
+  var authMod = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js');
   var fs = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js');
   var app = appMod.initializeApp(cfg);
+  // Anonymous sign-in lets Firestore rules require an authenticated request,
+  // so the data isn't openly writable by anyone who finds the project.
+  var auth = authMod.getAuth(app);
+  await authMod.signInAnonymously(auth);
   var db = fs.getFirestore(app);
   var col = fs.collection(db, 'bookings');
   return {
@@ -942,7 +1009,12 @@ async function makeFirebaseStore(cfg) {
     },
     add: function(o){ return fs.addDoc(col, o); },
     update: function(id, o){ return fs.updateDoc(fs.doc(db, 'bookings', id), o); },
-    remove: function(id){ return fs.deleteDoc(fs.doc(db, 'bookings', id)); }
+    remove: function(id){ return fs.deleteDoc(fs.doc(db, 'bookings', id)); },
+    ensure: async function(id, o){
+      var ref = fs.doc(db, 'bookings', id);
+      var snap = await fs.getDoc(ref);
+      if (!snap.exists()) await fs.setDoc(ref, o);
+    }
   };
 }
 
@@ -977,6 +1049,7 @@ async function initStore() {
     renderBookings();
     renderAllCityExtras();
   });
+  seedKnownBookings();
 }
 
 /* ---- Rendering ---- */
@@ -1125,7 +1198,39 @@ document.addEventListener('click', function(e) {
   }
 });
 
-initStore();
+/* ---- Password gate ---- */
+var PASS_HASH = '23ebce72c4424e81ef48a495bc9ca88c93b8a34ab398bed854b76f1c784ab227';
+var GATE_KEY = 'spain_unlocked_v1';
+
+async function sha256hex(str){
+  var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(function(b){ return b.toString(16).padStart(2,'0'); }).join('');
+}
+
+function unlock(){
+  document.body.classList.add('unlocked');
+  initStore();
+}
+
+if (localStorage.getItem(GATE_KEY) === PASS_HASH) {
+  unlock();
+}
+
+document.getElementById('gate-form').addEventListener('submit', async function(e){
+  e.preventDefault();
+  var input = document.getElementById('gate-input');
+  var err = document.getElementById('gate-error');
+  var h = await sha256hex(input.value.trim().toLowerCase());
+  if (h === PASS_HASH) {
+    localStorage.setItem(GATE_KEY, PASS_HASH);
+    err.classList.remove('show');
+    unlock();
+  } else {
+    err.classList.add('show');
+    input.value = '';
+    input.focus();
+  }
+});
 </script>
 </body>
 </html>
