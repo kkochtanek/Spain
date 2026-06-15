@@ -303,10 +303,75 @@
   .checklist li svg { width: 16px; height: 16px; margin-top: 3px; flex-shrink: 0; color: var(--sev); }
   .checklist li strong { color: var(--ink); font-weight: 500; }
 
+  /* Trip at a glance */
+  .overview {
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.5rem 1.75rem;
+    margin-bottom: 2.5rem;
+  }
+  .overview h3 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 400;
+    font-size: 20px;
+    margin-bottom: 4px;
+  }
+  .overview .sub {
+    font-size: 14px;
+    color: var(--hint);
+    margin-bottom: 1.1rem;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+  }
+  .overview-bar {
+    display: flex;
+    height: 10px;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 1.1rem;
+  }
+  .overview-bar span { display: block; }
+  .seg-bcn { background: var(--bcn); }
+  .seg-mrb { background: var(--mrb); }
+  .seg-sev { background: var(--sev); }
+  .seg-mad { background: var(--mad); }
+  .overview-list { list-style: none; }
+  .overview-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+  }
+  .overview-item:last-child { border-bottom: none; }
+  .overview-item:hover .ov-name { text-decoration: underline; }
+  .ov-dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
+  .dot-bcn { background: var(--bcn); }
+  .dot-mrb { background: var(--mrb); }
+  .dot-sev { background: var(--sev); }
+  .dot-mad { background: var(--mad); }
+  .ov-name { font-weight: 500; font-size: 16px; flex: 1; }
+  .ov-dates { font-size: 13px; color: var(--muted); margin-right: 4px; }
+  .ov-nights {
+    font-size: 13px;
+    color: var(--muted);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 3px 10px;
+    white-space: nowrap;
+    min-width: 78px;
+    text-align: center;
+  }
+
   @media (max-width: 520px) {
     .hero h1 { font-size: 32px; }
     .city-title { font-size: 24px; }
     .activity-time { min-width: 50px; font-size: 12px; }
+    .overview .sub { font-size: 13px; }
+    .ov-dates { display: none; }
   }
 </style>
 </head>
@@ -323,6 +388,8 @@
       <span class="meta-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Barcelona · Marbella · Sevilla · Madrid</span>
     </div>
   </div>
+
+  <div class="overview" id="overview"></div>
 
   <div class="nav-row">
     <button class="nav-btn active" data-city="bcn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/></svg> Barcelona</button>
@@ -381,7 +448,7 @@
       <div class="city-badge mad"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 19h18l-2-9-4 3-3-6-3 6-4-3z"/></svg></div>
       <div>
         <div class="city-title">Madrid</div>
-        <div class="city-dates">July 25–28 · 2 nights · Fly home Jul 28</div>
+        <div class="city-dates">July 25–28 · 3 nights · Fly home Jul 28</div>
       </div>
     </div>
     <p class="city-intro">Two full days in the capital. Madrid is cooler than Sevilla, greener, and has a completely different energy. World-class museums, incredible food markets, and a park that could absorb a whole day. Relaxed final stretch before heading home.</p>
@@ -543,6 +610,42 @@ var DATA = {
   ]
 };
 
+var CITIES = [
+  { key:'bcn', name:'Barcelona', dates:'Jul 15–17', nights:2 },
+  { key:'mrb', name:'Marbella',  dates:'Jul 17–22', nights:5 },
+  { key:'sev', name:'Sevilla',   dates:'Jul 22–25', nights:3 },
+  { key:'mad', name:'Madrid',    dates:'Jul 25–28', nights:3 }
+];
+
+function renderOverview() {
+  var totalNights = CITIES.reduce(function(s,c){ return s + c.nights; }, 0);
+  var bar = CITIES.map(function(c){
+    return '<span class="seg-'+c.key+'" style="flex:'+c.nights+'" title="'+c.name+': '+c.nights+' nights"></span>';
+  }).join('');
+  var list = CITIES.map(function(c){
+    return '<li class="overview-item" data-city="'+c.key+'">'+
+      '<span class="ov-dot dot-'+c.key+'"></span>'+
+      '<span class="ov-name">'+c.name+'</span>'+
+      '<span class="ov-dates">'+c.dates+'</span>'+
+      '<span class="ov-nights">'+c.nights+' nights</span></li>';
+  }).join('');
+  document.getElementById('overview').innerHTML =
+    '<h3>Trip at a glance</h3>'+
+    '<div class="sub">14 days · '+totalNights+' nights · '+CITIES.length+' cities · July 15–28</div>'+
+    '<div class="overview-bar">'+bar+'</div>'+
+    '<ul class="overview-list">'+list+'</ul>';
+}
+renderOverview();
+
+function showCity(city) {
+  document.querySelectorAll('.city-section').forEach(function(s){ s.classList.remove('visible'); });
+  document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.remove('active'); });
+  document.getElementById('city-'+city).classList.add('visible');
+  var btn = document.querySelector('.nav-btn[data-city="'+city+'"]');
+  if (btn) btn.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 function renderDays(city) {
   var html = '';
   DATA[city].forEach(function(day) {
@@ -567,13 +670,13 @@ function renderDays(city) {
 
 document.querySelectorAll('.nav-btn').forEach(function(btn) {
   btn.addEventListener('click', function() {
-    var city = btn.getAttribute('data-city');
-    document.querySelectorAll('.city-section').forEach(function(s){ s.classList.remove('visible'); });
-    document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.remove('active'); });
-    document.getElementById('city-'+city).classList.add('visible');
-    btn.classList.add('active');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    showCity(btn.getAttribute('data-city'));
   });
+});
+
+document.getElementById('overview').addEventListener('click', function(e) {
+  var item = e.target.closest('.overview-item');
+  if (item) showCity(item.getAttribute('data-city'));
 });
 
 document.addEventListener('click', function(e) {
