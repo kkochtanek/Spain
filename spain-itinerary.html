@@ -366,12 +366,92 @@
     text-align: center;
   }
 
+  /* Plan & Bookings */
+  .sync-banner {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; padding: 10px 14px; border-radius: 10px;
+    margin-bottom: 1.25rem; line-height: 1.5;
+  }
+  .sync-banner.local { background: var(--sev-bg); color: var(--sev); border: 1px solid rgba(133,79,11,.2); }
+  .sync-banner.cloud { background: var(--mrb-bg); color: var(--mrb); border: 1px solid rgba(15,110,86,.2); }
+  .sync-banner svg { width: 16px; height: 16px; flex-shrink: 0; }
+  .sync-banner a { color: inherit; font-weight: 500; }
+
+  .booking-form {
+    background: var(--paper); border: 1px solid var(--border);
+    border-radius: 14px; padding: 1.25rem 1.5rem; margin-bottom: 1.75rem;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  }
+  .booking-form h4 { grid-column: 1 / -1; font-family:'Playfair Display',serif; font-weight:400; font-size:18px; }
+  .field { display: flex; flex-direction: column; gap: 4px; }
+  .field.full { grid-column: 1 / -1; }
+  .field label { font-size: 12px; letter-spacing: .04em; text-transform: uppercase; color: var(--hint); }
+  .field input, .field select, .field textarea {
+    font-family: 'Crimson Pro', serif; font-size: 15px; color: var(--ink);
+    background: var(--bg); border: 1px solid var(--border-strong);
+    border-radius: 8px; padding: 8px 10px; width: 100%;
+  }
+  .field textarea { resize: vertical; min-height: 52px; }
+  .form-actions { grid-column: 1 / -1; display: flex; gap: 10px; align-items: center; }
+  .btn {
+    font-family:'Crimson Pro',serif; font-size:15px; padding:9px 20px; border-radius:24px;
+    border:1px solid var(--ink); background:var(--ink); color:var(--paper); cursor:pointer; transition:opacity .18s;
+  }
+  .btn:hover { opacity: .85; }
+  .btn.ghost { background: transparent; color: var(--muted); border-color: var(--border-strong); }
+
+  .booking-group { margin-bottom: 1.5rem; }
+  .booking-group > h4 {
+    font-family:'Playfair Display',serif; font-weight:400; font-size:18px;
+    margin-bottom:.6rem; display:flex; align-items:center; gap:8px;
+  }
+  .booking-card {
+    background: var(--paper); border: 1px solid var(--border); border-radius: 12px;
+    padding: 12px 16px; margin-bottom: 10px;
+  }
+  .booking-card.is-suggestion { border-style: dashed; background: transparent; }
+  .bc-top { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .bc-title { font-weight:500; font-size:16px; flex:1; }
+  .bc-meta { font-size:13px; color:var(--muted); margin-top:4px; }
+  .bc-meta a { color: var(--bcn); }
+  .bc-notes { font-size:14px; color:var(--muted); margin-top:6px; font-weight:300; line-height:1.55; }
+  .bc-actions { display:flex; gap:6px; margin-top:8px; flex-wrap:wrap; }
+  .bc-actions button {
+    font-family:'Crimson Pro',serif; font-size:13px; padding:4px 12px; border-radius:14px;
+    border:1px solid var(--border-strong); background:transparent; color:var(--muted); cursor:pointer;
+  }
+  .bc-actions button:hover { background: var(--bg); color: var(--ink); }
+  .status-badge { font-size:12px; padding:3px 10px; border-radius:12px; white-space:nowrap; }
+  .status-suggestion { background:#f1efe8; color:#6b6453; }
+  .status-considering { background: var(--sev-bg); color: var(--sev); }
+  .status-booked { background: var(--mrb-bg); color: var(--mrb); }
+  .type-chip { font-size:12px; color:var(--hint); }
+
+  /* Concierge picks + per-city bookings */
+  .city-extras { margin-bottom: 1.75rem; }
+  .concierge {
+    background: var(--bcn-bg); border: 1px solid rgba(24,95,165,.18);
+    border-radius: 14px; padding: 1.1rem 1.4rem; margin-bottom: 1.25rem;
+  }
+  .concierge h4 {
+    font-family:'Playfair Display',serif; font-weight:400; font-size:17px; color: var(--bcn);
+    margin-bottom:.5rem; display:flex; align-items:center; gap:8px;
+  }
+  .concierge h4 svg { width:18px;height:18px; flex-shrink:0; }
+  .concierge ul { list-style:none; }
+  .concierge li { padding:7px 0; font-size:15px; line-height:1.55; border-bottom:1px solid rgba(24,95,165,.12); font-weight:300; }
+  .concierge li:last-child { border-bottom:none; }
+  .concierge li strong { font-weight:500; color: var(--ink); }
+  .concierge .note { font-style: italic; color: var(--muted); }
+  .city-bookings-empty { font-size:14px; color:var(--hint); font-weight:300; font-style:italic; padding: 2px 0 4px; }
+
   @media (max-width: 520px) {
     .hero h1 { font-size: 32px; }
     .city-title { font-size: 24px; }
     .activity-time { min-width: 50px; font-size: 12px; }
     .overview .sub { font-size: 13px; }
     .ov-dates { display: none; }
+    .booking-form { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -396,6 +476,7 @@
     <button class="nav-btn" data-city="mrb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="3"/><path d="M3 21c4-3 14-3 18 0M12 11v6"/></svg> Marbella</button>
     <button class="nav-btn" data-city="sev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6"/></svg> Sevilla</button>
     <button class="nav-btn" data-city="mad"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 19h18l-2-9-4 3-3-6-3 6-4-3z"/></svg> Madrid</button>
+    <button class="nav-btn" data-city="plan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 11l3 3 8-8M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Plan & Bookings</button>
   </div>
 
   <!-- BARCELONA -->
@@ -413,6 +494,7 @@
       <span class="det">AA 2720 + AA 742 · Departs 11:20am Jul 14 · Arrives 6:45am Jul 15</span>
     </div>
     <p class="city-intro">Landing exhausted after an overnight flight — keep it simple. One iconic thing per day, lots of wandering, and don't stress about seeing everything. Barcelona rewards slowness.</p>
+    <div class="city-extras" id="extras-bcn"></div>
     <div id="days-bcn"></div>
   </section>
 
@@ -426,6 +508,7 @@
       </div>
     </div>
     <p class="city-intro">Your anchor. Five nights on the Costa del Sol with a car gives you serious flexibility — beach days, day trips, late lunches, early swims. Don't over-programme it. The Mediterranean in July is perfect.</p>
+    <div class="city-extras" id="extras-mrb"></div>
     <div id="days-mrb"></div>
   </section>
 
@@ -439,6 +522,7 @@
       </div>
     </div>
     <p class="city-intro">The most romantic and dramatic city in Spain. Enormous history, incredible food, and a pace that suits families. Remember: siesta is real here (2–5pm everything closes), dinner starts at 9pm, and tapas are free in some bars.</p>
+    <div class="city-extras" id="extras-sev"></div>
     <div id="days-sev"></div>
   </section>
 
@@ -452,7 +536,71 @@
       </div>
     </div>
     <p class="city-intro">Two full days in the capital. Madrid is cooler than Sevilla, greener, and has a completely different energy. World-class museums, incredible food markets, and a park that could absorb a whole day. Relaxed final stretch before heading home.</p>
+    <div class="city-extras" id="extras-mad"></div>
     <div id="days-mad"></div>
+  </section>
+
+  <!-- PLAN & BOOKINGS -->
+  <section class="city-section" id="city-plan">
+    <div class="city-header">
+      <div class="city-badge" style="background:#efece4;color:#6b6453"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 11l3 3 8-8M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+      <div>
+        <div class="city-title">Plan &amp; Bookings</div>
+        <div class="city-dates">Your shared trip log — add real bookings as you confirm them</div>
+      </div>
+    </div>
+    <div class="sync-banner" id="sync-banner"></div>
+    <p class="city-intro">Log every confirmed booking here — flights, lodging, trains, the rental car, tickets and dinner reservations. Anything you add saves automatically and, once Firebase is connected, syncs live between you and Alyssa. Each city tab also shows my concierge picks while you finalise plans.</p>
+    <form class="booking-form" id="booking-form" autocomplete="off">
+      <h4 id="form-title">Add a booking</h4>
+      <div class="field">
+        <label>Status</label>
+        <select name="status">
+          <option value="booked">Booked ✓</option>
+          <option value="considering">Considering</option>
+          <option value="suggestion">Idea / suggestion</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Type</label>
+        <select name="type">
+          <option value="flight">Flight</option>
+          <option value="lodging">Lodging</option>
+          <option value="transport">Train / Car</option>
+          <option value="activity">Activity</option>
+          <option value="dining">Dining</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>City</label>
+        <select name="city">
+          <option value="general">General</option>
+          <option value="bcn">Barcelona</option>
+          <option value="mrb">Marbella</option>
+          <option value="sev">Sevilla</option>
+          <option value="mad">Madrid</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Added by</label>
+        <select name="addedBy">
+          <option value="Kyle">Kyle</option>
+          <option value="Alyssa">Alyssa</option>
+        </select>
+      </div>
+      <div class="field full"><label>Title</label><input name="title" placeholder="e.g. Hotel The One Barcelona — family suite"></div>
+      <div class="field"><label>Date</label><input name="date" placeholder="Jul 15"></div>
+      <div class="field"><label>Time</label><input name="time" placeholder="6:45am"></div>
+      <div class="field"><label>Cost</label><input name="cost" placeholder="€420"></div>
+      <div class="field"><label>Confirmation #</label><input name="confirmation" placeholder="ABC123"></div>
+      <div class="field full"><label>Link</label><input name="link" placeholder="https://..."></div>
+      <div class="field full"><label>Notes</label><textarea name="notes" placeholder="Anything worth remembering — address, cancellation policy, who it's for…"></textarea></div>
+      <div class="form-actions">
+        <button type="submit" class="btn" id="form-submit">Add booking</button>
+        <button type="button" class="btn ghost" id="form-cancel" style="display:none">Cancel edit</button>
+      </div>
+    </form>
+    <div id="bookings-list"></div>
   </section>
 
   <div class="checklist">
@@ -683,6 +831,301 @@ document.addEventListener('click', function(e) {
   var header = e.target.closest('.day-header');
   if (header) header.parentElement.classList.toggle('open');
 });
+
+/* =====================================================================
+   PLAN & BOOKINGS
+   ---------------------------------------------------------------------
+   To turn on live sync between Kyle & Alyssa, paste your Firebase web
+   config below (Firebase console -> Project settings -> Your apps).
+   Until then everything still works and saves on this device only.
+   Setup steps are in SETUP.md.
+   ===================================================================== */
+var FIREBASE_CONFIG = {
+  apiKey: "",
+  authDomain: "",
+  projectId: "",
+  appId: ""
+};
+
+var CITY_NAMES = { general:'General', bcn:'Barcelona', mrb:'Marbella', sev:'Sevilla', mad:'Madrid' };
+var CITY_ORDER = ['general','bcn','mrb','sev','mad'];
+var TYPE_LABELS = { flight:'Flight', lodging:'Lodging', transport:'Train / Car', activity:'Activity', dining:'Dining' };
+var STATUS_LABELS = { suggestion:'Idea', considering:'Considering', booked:'Booked ✓' };
+var STATUS_NEXT = { suggestion:'considering', considering:'booked', booked:'suggestion' };
+
+function esc(s){
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+    return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+  });
+}
+function safeUrl(u){
+  if (!u) return '';
+  u = String(u).trim();
+  if (/^https?:\/\//i.test(u)) return u;
+  if (/^[\w.-]+\.[a-z]{2,}/i.test(u)) return 'https://' + u;
+  return '';
+}
+
+/* ---- Concierge picks (my travel-agent recommendations) ---- */
+var SUGGESTIONS = {
+  bcn: {
+    note: "A family of 5 won't fit in a standard Barcelona hotel room — book a family suite or an apartment.",
+    items: [
+      ['Lodging', "Two-bedroom apartment or family suite in Eixample, near Passeig de Gràcia — central, walkable, and AC is essential in July. Cotton House and The One are lovely splurges; a serviced apartment gives the kids room to spread out."],
+      ['Activity', "Sagrada Família — book the first morning slot the moment tickets open, and add tower access for the older kids."],
+      ['Activity', "Park Güell monumental zone — reserve an early slot the same morning, before the heat builds."],
+      ['Dining', "Beachfront paella at Barceloneta one day; tapas in El Born for an evening. Reserve a table for 5 a day ahead."]
+    ]
+  },
+  mrb: {
+    note: "Five nights with three kids points to a villa with a private pool, or a resort with a kids' club and beach access.",
+    items: [
+      ['Lodging', "Villa with a private pool in Nueva Andalucía or Sierra Blanca for space and downtime — or a resort like Puente Romano or Los Monteros (multiple pools, beach, very family-friendly)."],
+      ['Train / Car', "Rental car: pick up at Málaga (AGP) on arrival, drop in Sevilla. Book a 7-seater for 5 people plus luggage."],
+      ['Activity', "Day trips are already planned — Ronda and Nerja/Frigiliana. Keep two days completely open for the beach."],
+      ['Dining', "Beach clubs: Trocadero or Playa Padre for a long lazy lunch. Bibo (Dani García) for one nicer dinner."]
+    ]
+  },
+  sev: {
+    note: "July in Sevilla is brutal — often 40°C+. A hotel with a pool is non-negotiable here.",
+    items: [
+      ['Lodging', "Hotel with a pool — Hotel Alfonso XIII (grand and iconic), Mercer, or an apartment in Santa Cruz with a plunge pool. All walkable to everything."],
+      ['Activity', "Real Alcázar — book the very first slot of the day to beat the heat and the crowds."],
+      ['Activity', "Flamenco — Casa de la Memoria, the early ~7pm show. Reserve 5 seats well ahead."],
+      ['Train / Car', "AVE Sevilla → Madrid: book early on Renfe, Preferente class for the family. ~2.5 hrs."]
+    ]
+  },
+  mad: {
+    note: "Cooler than the south, but a hotel pool still earns its keep with kids in July.",
+    items: [
+      ['Lodging', "Family-friendly luxury near Retiro — Four Seasons or Rosewood Villa Magna (both have pools), or a roomy apartment by the park."],
+      ['Activity', "Prado and Royal Palace — book timed tickets. Consider a Warner Bros. Park day as the kids' reward."],
+      ['Dining', "Sobrino de Botín (the oldest restaurant in the world — the kids will love that), Mercado de San Miguel, and churros at San Ginés."],
+      ['Activity', "Final celebratory dinner — book somewhere special for the last night."]
+    ]
+  }
+};
+
+/* ---- Storage: Firebase if configured, otherwise this device ---- */
+var BOOKINGS = [];
+var store = null;
+
+function makeLocalStore() {
+  var KEY = 'spain_bookings_v1';
+  function read(){ try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch(e){ return []; } }
+  function write(a){ localStorage.setItem(KEY, JSON.stringify(a)); }
+  var subs = [];
+  function emit(){ var d = read(); subs.forEach(function(cb){ cb(d); }); }
+  return {
+    mode: 'local',
+    subscribe: function(cb){ subs.push(cb); cb(read()); },
+    add: function(o){ var a = read(); o.id = 'b' + Date.now() + Math.random().toString(36).slice(2,6); a.push(o); write(a); emit(); },
+    update: function(id, o){ write(read().map(function(x){ return x.id === id ? Object.assign({}, x, o) : x; })); emit(); },
+    remove: function(id){ write(read().filter(function(x){ return x.id !== id; })); emit(); }
+  };
+}
+
+async function makeFirebaseStore(cfg) {
+  var appMod = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js');
+  var fs = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js');
+  var app = appMod.initializeApp(cfg);
+  var db = fs.getFirestore(app);
+  var col = fs.collection(db, 'bookings');
+  return {
+    mode: 'cloud',
+    subscribe: function(cb){
+      fs.onSnapshot(col, function(snap){
+        var arr = [];
+        snap.forEach(function(d){ arr.push(Object.assign({ id: d.id }, d.data())); });
+        cb(arr);
+      });
+    },
+    add: function(o){ return fs.addDoc(col, o); },
+    update: function(id, o){ return fs.updateDoc(fs.doc(db, 'bookings', id), o); },
+    remove: function(id){ return fs.deleteDoc(fs.doc(db, 'bookings', id)); }
+  };
+}
+
+function setSyncBanner(mode) {
+  var el = document.getElementById('sync-banner');
+  if (!el) return;
+  if (mode === 'cloud') {
+    el.className = 'sync-banner cloud';
+    el.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/><path d="M9 14l2 2 4-4"/></svg> <span>Live sync is on — your bookings update in real time across both of your devices.</span>';
+  } else {
+    el.className = 'sync-banner local';
+    el.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 9v4M12 17h0M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg> <span>Saving on this device only. Add your Firebase config (see SETUP.md) to sync live with Alyssa.</span>';
+  }
+}
+
+async function initStore() {
+  if (FIREBASE_CONFIG && FIREBASE_CONFIG.projectId) {
+    try {
+      store = await makeFirebaseStore(FIREBASE_CONFIG);
+      setSyncBanner('cloud');
+    } catch (e) {
+      console.warn('Firebase unavailable, using local storage:', e);
+      store = makeLocalStore();
+      setSyncBanner('local');
+    }
+  } else {
+    store = makeLocalStore();
+    setSyncBanner('local');
+  }
+  store.subscribe(function(d){
+    BOOKINGS = d;
+    renderBookings();
+    renderAllCityExtras();
+  });
+}
+
+/* ---- Rendering ---- */
+function bookingCardHTML(b) {
+  var url = safeUrl(b.link);
+  var metaParts = [b.date, b.time, b.cost, b.confirmation && ('Conf: ' + b.confirmation)].filter(Boolean).map(esc);
+  var meta = metaParts.join(' · ');
+  var link = url ? (meta ? ' · ' : '') + '<a href="' + esc(url) + '" target="_blank" rel="noopener">open link</a>' : '';
+  var status = STATUS_LABELS[b.status] ? b.status : 'booked';
+  return '<div class="booking-card ' + (status === 'suggestion' ? 'is-suggestion' : '') + '" data-id="' + esc(b.id) + '">' +
+      '<div class="bc-top">' +
+        '<span class="status-badge status-' + status + '">' + STATUS_LABELS[status] + '</span>' +
+        '<span class="bc-title">' + esc(b.title || '(untitled)') + '</span>' +
+        '<span class="type-chip">' + (TYPE_LABELS[b.type] || '') + '</span>' +
+      '</div>' +
+      (meta || link ? '<div class="bc-meta">' + meta + link + '</div>' : '') +
+      (b.notes ? '<div class="bc-notes">' + esc(b.notes) + '</div>' : '') +
+      (b.addedBy ? '<div class="bc-meta">Added by ' + esc(b.addedBy) + '</div>' : '') +
+      '<div class="bc-actions">' +
+        '<button data-act="cycle">Mark: ' + STATUS_LABELS[STATUS_NEXT[status]] + '</button>' +
+        '<button data-act="edit">Edit</button>' +
+        '<button data-act="del">Delete</button>' +
+      '</div>' +
+    '</div>';
+}
+
+function renderBookings() {
+  var el = document.getElementById('bookings-list');
+  if (!el) return;
+  if (!BOOKINGS.length) {
+    el.innerHTML = '<p class="city-bookings-empty">No bookings logged yet. Add your first one above — flights and lodging are a great place to start.</p>';
+    return;
+  }
+  var html = '';
+  CITY_ORDER.forEach(function(ck){
+    var items = BOOKINGS.filter(function(b){ return (b.city || 'general') === ck; });
+    if (!items.length) return;
+    html += '<div class="booking-group"><h4>' + esc(CITY_NAMES[ck]) + '</h4>' +
+      items.map(bookingCardHTML).join('') + '</div>';
+  });
+  el.innerHTML = html;
+}
+
+function conciergeHTML(ck) {
+  var s = SUGGESTIONS[ck];
+  if (!s) return '';
+  var lis = s.items.map(function(it){
+    return '<li><strong>' + esc(it[0]) + '.</strong> ' + esc(it[1]) + '</li>';
+  }).join('');
+  if (s.note) lis += '<li class="note">' + esc(s.note) + '</li>';
+  return '<div class="concierge">' +
+      '<h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2l2.4 5 5.6.5-4.2 3.7 1.3 5.5L12 19l-5.1 2.7 1.3-5.5L4 12.5 9.6 12z"/></svg> Concierge picks — ' + esc(CITY_NAMES[ck]) + '</h4>' +
+      '<ul>' + lis + '</ul></div>';
+}
+
+function renderCityExtras(ck) {
+  var el = document.getElementById('extras-' + ck);
+  if (!el) return;
+  var items = BOOKINGS.filter(function(b){ return (b.city || 'general') === ck; });
+  var bookingsHTML = items.length
+    ? items.map(bookingCardHTML).join('')
+    : '<p class="city-bookings-empty">Nothing booked here yet. Add it on the Plan &amp; Bookings tab.</p>';
+  el.innerHTML = conciergeHTML(ck) +
+    '<div class="booking-group"><h4>Your bookings — ' + esc(CITY_NAMES[ck]) + '</h4>' + bookingsHTML + '</div>';
+}
+
+function renderAllCityExtras() {
+  ['bcn','mrb','sev','mad'].forEach(renderCityExtras);
+}
+renderAllCityExtras();
+
+/* ---- Form: add / edit ---- */
+var editId = null;
+var form = document.getElementById('booking-form');
+
+function resetForm() {
+  editId = null;
+  form.reset();
+  document.getElementById('form-title').textContent = 'Add a booking';
+  document.getElementById('form-submit').textContent = 'Add booking';
+  document.getElementById('form-cancel').style.display = 'none';
+}
+
+form.addEventListener('submit', function(e) {
+  e.preventDefault();
+  var f = form.elements;
+  var data = {
+    status: f.status.value,
+    type: f.type.value,
+    city: f.city.value,
+    addedBy: f.addedBy.value,
+    title: f.title.value.trim(),
+    date: f.date.value.trim(),
+    time: f.time.value.trim(),
+    cost: f.cost.value.trim(),
+    confirmation: f.confirmation.value.trim(),
+    link: f.link.value.trim(),
+    notes: f.notes.value.trim(),
+    updatedAt: Date.now()
+  };
+  if (!data.title) { f.title.focus(); return; }
+  if (editId) { store.update(editId, data); }
+  else { store.add(data); }
+  resetForm();
+});
+
+document.getElementById('form-cancel').addEventListener('click', resetForm);
+
+function loadIntoForm(b) {
+  editId = b.id;
+  var f = form.elements;
+  f.status.value = b.status || 'booked';
+  f.type.value = b.type || 'activity';
+  f.city.value = b.city || 'general';
+  f.addedBy.value = b.addedBy || 'Kyle';
+  f.title.value = b.title || '';
+  f.date.value = b.date || '';
+  f.time.value = b.time || '';
+  f.cost.value = b.cost || '';
+  f.confirmation.value = b.confirmation || '';
+  f.link.value = b.link || '';
+  f.notes.value = b.notes || '';
+  document.getElementById('form-title').textContent = 'Edit booking';
+  document.getElementById('form-submit').textContent = 'Save changes';
+  document.getElementById('form-cancel').style.display = 'inline-block';
+}
+
+/* ---- Card actions (works on both the Plan tab and city tabs) ---- */
+document.addEventListener('click', function(e) {
+  var btn = e.target.closest('.bc-actions button');
+  if (!btn) return;
+  var card = btn.closest('.booking-card');
+  if (!card) return;
+  var id = card.getAttribute('data-id');
+  var b = BOOKINGS.filter(function(x){ return x.id === id; })[0];
+  if (!b) return;
+  var act = btn.getAttribute('data-act');
+  if (act === 'del') {
+    if (confirm('Delete "' + (b.title || 'this booking') + '"?')) store.remove(id);
+  } else if (act === 'cycle') {
+    store.update(id, { status: STATUS_NEXT[STATUS_LABELS[b.status] ? b.status : 'booked'] });
+  } else if (act === 'edit') {
+    showCity('plan');
+    loadIntoForm(b);
+    document.getElementById('booking-form').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+});
+
+initStore();
 </script>
 </body>
 </html>
