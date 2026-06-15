@@ -77,12 +77,20 @@ Claude Code chat, and I extract the airline/hotel/dates/confirmation and add
 it to the itinerary. Fastest to start today.
 
 **Option B — shared Google Drive folder (best for Alyssa to self-serve):**
-1. Create a Google Drive folder, e.g. `Spain 2026 Bookings`, and share it with
-   both of you.
-2. Alyssa (or Kyle) drops confirmation PDFs/screenshots into that folder.
-3. In a Claude session, point me at the folder — I read the new files, pull
-   out the details, add them as bookings, and fold the relevant ones into the
-   day-by-day itinerary.
+The folder already exists: **Spain 2026 Bookings**
+<https://drive.google.com/drive/folders/1XIbsGonqKziJfbSFFLbQ9i0cF5h6x6wd>
+(it has a short READ ME inside).
+1. Share it with Alyssa (right-click → Share → add her email).
+2. Either of you drops confirmation PDFs/screenshots into it — no renaming
+   or organizing needed.
+3. In a Claude session, say "check the Spain folder." I read the new files,
+   extract the details, log them on the Plan & Bookings page, and fold the
+   relevant ones into the day-by-day itinerary, then push the update.
+
+How this connects to the data: items I log from the folder are written into
+`CONFIRMED_BOOKINGS` in the HTML (baked into the site, always visible to both
+of you on reload). The on-page form + Firebase are for quick self-entry on top
+of those. So the folder works whether or not you finish the Firebase setup.
 
 Either way: I add the confirmed item to the `Plan & Bookings` data and, when it
 affects a specific day (a hotel check-in, a flight, a timed ticket), I drop it

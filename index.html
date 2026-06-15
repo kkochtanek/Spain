@@ -947,25 +947,23 @@ var SUGGESTIONS = {
   }
 };
 
-/* ---- Known confirmed bookings (seeded once) ---- */
-var KNOWN_BOOKINGS = [
-  { id:'seed-flight-out', status:'booked', type:'flight', city:'bcn', addedBy:'Kyle',
+/* ---- Confirmed bookings ---------------------------------------------
+   These are logged from real confirmations (emails / screenshots) and are
+   baked into the site, so they always show for everyone. As Kyle & Alyssa
+   send confirmations, I add them here and fold them into the day plans.
+   The form below + Firebase are for quick self-entry on top of these.
+   -------------------------------------------------------------------- */
+var CONFIRMED_BOOKINGS = [
+  { id:'c-flight-out', source:'confirmed', status:'booked', type:'flight', city:'bcn', addedBy:'Kyle',
     title:'STL → PHL → BCN (outbound)', date:'Jul 14–15', time:'Dep 11:20am', cost:'', confirmation:'SKHETT',
     notes:'AA 2720 STL→PHL, then AA 742 PHL→BCN. Departs 11:20am Jul 14, arrives Barcelona 6:45am Jul 15 (overnight flight).' },
-  { id:'seed-flight-home', status:'booked', type:'flight', city:'mad', addedBy:'Kyle',
+  { id:'c-flight-home', source:'confirmed', status:'booked', type:'flight', city:'mad', addedBy:'Kyle',
     title:'MAD → ORD → STL (return)', date:'Jul 28', time:'Dep 1:35pm', cost:'', confirmation:'SKHETT',
     notes:"AA 125 MAD→Chicago O'Hare (arrive 4pm), then AA 439 ORD→STL (dep 7:04pm, arrive 8:26pm). Home by bedtime." }
 ];
 
-function seedKnownBookings() {
-  if (!store || !store.ensure) return;
-  if (localStorage.getItem('spain_seeded_v1')) return;
-  KNOWN_BOOKINGS.forEach(function(b){
-    var o = Object.assign({}, b); delete o.id; o.seeded = true;
-    store.ensure(b.id, o);
-  });
-  localStorage.setItem('spain_seeded_v1', '1');
-}
+// Everything to display = confirmed (baked in) + live entries from the store.
+function allBookings() { return CONFIRMED_BOOKINGS.concat(BOOKINGS); }
 
 /* ---- Storage: Firebase if configured, otherwise this device ---- */
 var BOOKINGS = [];
@@ -982,8 +980,7 @@ function makeLocalStore() {
     subscribe: function(cb){ subs.push(cb); cb(read()); },
     add: function(o){ var a = read(); o.id = 'b' + Date.now() + Math.random().toString(36).slice(2,6); a.push(o); write(a); emit(); },
     update: function(id, o){ write(read().map(function(x){ return x.id === id ? Object.assign({}, x, o) : x; })); emit(); },
-    remove: function(id){ write(read().filter(function(x){ return x.id !== id; })); emit(); },
-    ensure: function(id, o){ var a = read(); if (!a.some(function(x){ return x.id === id; })) { a.push(Object.assign({ id: id }, o)); write(a); emit(); } }
+    remove: function(id){ write(read().filter(function(x){ return x.id !== id; })); emit(); }
   };
 }
 
@@ -1009,12 +1006,7 @@ async function makeFirebaseStore(cfg) {
     },
     add: function(o){ return fs.addDoc(col, o); },
     update: function(id, o){ return fs.updateDoc(fs.doc(db, 'bookings', id), o); },
-    remove: function(id){ return fs.deleteDoc(fs.doc(db, 'bookings', id)); },
-    ensure: async function(id, o){
-      var ref = fs.doc(db, 'bookings', id);
-      var snap = await fs.getDoc(ref);
-      if (!snap.exists()) await fs.setDoc(ref, o);
-    }
+    remove: function(id){ return fs.deleteDoc(fs.doc(db, 'bookings', id)); }
   };
 }
 
@@ -1049,7 +1041,6 @@ async function initStore() {
     renderBookings();
     renderAllCityExtras();
   });
-  seedKnownBookings();
 }
 
 /* ---- Rendering ---- */
@@ -1059,6 +1050,16 @@ function bookingCardHTML(b) {
   var meta = metaParts.join(' · ');
   var link = url ? (meta ? ' · ' : '') + '<a href="' + esc(url) + '" target="_blank" rel="noopener">open link</a>' : '';
   var status = STATUS_LABELS[b.status] ? b.status : 'booked';
+  var confirmed = b.source === 'confirmed';
+  var byline = confirmed
+    ? 'Logged from confirmation' + (b.addedBy ? ' · ' + esc(b.addedBy) : '')
+    : (b.addedBy ? 'Added by ' + esc(b.addedBy) : '');
+  var actions = confirmed ? '' :
+    '<div class="bc-actions">' +
+      '<button data-act="cycle">Mark: ' + STATUS_LABELS[STATUS_NEXT[status]] + '</button>' +
+      '<button data-act="edit">Edit</button>' +
+      '<button data-act="del">Delete</button>' +
+    '</div>';
   return '<div class="booking-card ' + (status === 'suggestion' ? 'is-suggestion' : '') + '" data-id="' + esc(b.id) + '">' +
       '<div class="bc-top">' +
         '<span class="status-badge status-' + status + '">' + STATUS_LABELS[status] + '</span>' +
@@ -1067,25 +1068,22 @@ function bookingCardHTML(b) {
       '</div>' +
       (meta || link ? '<div class="bc-meta">' + meta + link + '</div>' : '') +
       (b.notes ? '<div class="bc-notes">' + esc(b.notes) + '</div>' : '') +
-      (b.addedBy ? '<div class="bc-meta">Added by ' + esc(b.addedBy) + '</div>' : '') +
-      '<div class="bc-actions">' +
-        '<button data-act="cycle">Mark: ' + STATUS_LABELS[STATUS_NEXT[status]] + '</button>' +
-        '<button data-act="edit">Edit</button>' +
-        '<button data-act="del">Delete</button>' +
-      '</div>' +
+      (byline ? '<div class="bc-meta">' + byline + '</div>' : '') +
+      actions +
     '</div>';
 }
 
 function renderBookings() {
   var el = document.getElementById('bookings-list');
   if (!el) return;
-  if (!BOOKINGS.length) {
+  var all = allBookings();
+  if (!all.length) {
     el.innerHTML = '<p class="city-bookings-empty">No bookings logged yet. Add your first one above — flights and lodging are a great place to start.</p>';
     return;
   }
   var html = '';
   CITY_ORDER.forEach(function(ck){
-    var items = BOOKINGS.filter(function(b){ return (b.city || 'general') === ck; });
+    var items = all.filter(function(b){ return (b.city || 'general') === ck; });
     if (!items.length) return;
     html += '<div class="booking-group"><h4>' + esc(CITY_NAMES[ck]) + '</h4>' +
       items.map(bookingCardHTML).join('') + '</div>';
@@ -1108,7 +1106,7 @@ function conciergeHTML(ck) {
 function renderCityExtras(ck) {
   var el = document.getElementById('extras-' + ck);
   if (!el) return;
-  var items = BOOKINGS.filter(function(b){ return (b.city || 'general') === ck; });
+  var items = allBookings().filter(function(b){ return (b.city || 'general') === ck; });
   var bookingsHTML = items.length
     ? items.map(bookingCardHTML).join('')
     : '<p class="city-bookings-empty">Nothing booked here yet. Add it on the Plan &amp; Bookings tab.</p>';
