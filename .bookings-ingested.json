@@ -4,5 +4,12 @@
   "ignore": [
     "1RqijY1tNEhREKdMqa6pVAWt5T8WCMNJ44iDluSGzos8"
   ],
-  "processed": []
+  "processed": [
+    {
+      "fileId": "1v0rmEx4q9iSoJq5Th3w-yuH9X4HsxXBv",
+      "title": "Airbnb receipt — Barcelona Jul 15–17",
+      "bookingId": "c-airbnb-bcn",
+      "pendingDetails": "Address, host, total, and confirmation code not yet read — Drive read-content permission was not approved. Re-read and enrich c-airbnb-bcn once permission is granted."
+    }
+  ]
 }
