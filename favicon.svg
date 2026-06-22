@@ -1,10 +1,37 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
-  <defs><clipPath id="r"><rect x="0" y="0" width="512" height="512" rx="92" ry="92"/></clipPath></defs>
-  <g clip-path="url(#r)">
-    <rect x="0" y="0" width="512" height="512" fill="#f1bf00"/>
-    <rect x="0" y="0" width="512" height="128" fill="#c60b1e"/>
-    <rect x="0" y="384" width="512" height="128" fill="#c60b1e"/>
-    <polygon points="256.0,106.0 284.2,188.0 362.1,149.9 324.0,227.8 406.0,256.0 324.0,284.2 362.1,362.1 284.2,324.0 256.0,406.0 227.8,324.0 149.9,362.1 188.0,284.2 106.0,256.0 188.0,227.8 149.9,149.9 227.8,188.0" fill="#e07a14"/>
-    <circle cx="256" cy="256" r="80" fill="#e07a14"/>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#b00718"/>
+      <stop offset="0.42" stop-color="#e8551f"/>
+      <stop offset="0.74" stop-color="#f7a325"/>
+      <stop offset="1" stop-color="#ffd23f"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#fff7da"/>
+      <stop offset="0.6" stop-color="#ffe48a"/>
+      <stop offset="1" stop-color="#ffbf3a"/>
+    </radialGradient>
+    <clipPath id="rc"><rect width="512" height="512" rx="112" ry="112"/></clipPath>
+  </defs>
+  <g clip-path="url(#rc)">
+    <rect width="512" height="512" fill="url(#sky)"/>
+    <g fill="#ffdf7a" opacity="0.92">
+      <path d="M250.1,128.2 L256.0,68.0 L261.9,128.2 Z"/>
+      <path d="M304.8,139.6 L340.0,90.5 L315.1,145.6 Z"/>
+      <path d="M346.4,176.9 L401.5,152.0 L352.4,187.2 Z"/>
+      <path d="M363.8,230.1 L424.0,236.0 L363.8,241.9 Z"/>
+      <path d="M352.4,284.8 L401.5,320.0 L346.4,295.1 Z"/>
+      <path d="M315.1,326.4 L340.0,381.5 L304.8,332.4 Z"/>
+      <path d="M261.9,343.8 L256.0,404.0 L250.1,343.8 Z"/>
+      <path d="M207.2,332.4 L172.0,381.5 L196.9,326.4 Z"/>
+      <path d="M165.6,295.1 L110.5,320.0 L159.6,284.8 Z"/>
+      <path d="M148.2,241.9 L88.0,236.0 L148.2,230.1 Z"/>
+      <path d="M159.6,187.2 L110.5,152.0 L165.6,176.9 Z"/>
+      <path d="M196.9,145.6 L172.0,90.5 L207.2,139.6 Z"/>
+    </g>
+    <circle cx="256" cy="236" r="92" fill="url(#sun)"/>
+    <!-- rolling Andalusian hills -->
+    <path d="M0,372 C120,332 200,392 300,372 C390,354 460,392 512,374 L512,512 L0,512 Z" fill="#8c0a16"/>
+    <path d="M0,430 C110,398 210,452 320,430 C410,412 470,448 512,436 L512,512 L0,512 Z" fill="#5c0712"/>
   </g>
 </svg>
