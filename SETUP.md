@@ -111,31 +111,31 @@ your itinerary and bookings. So the API key is never exposed in this public
 page, the page talks to a tiny proxy you host (a free Cloudflare Worker); the
 proxy holds the key and checks the family password before calling Claude.
 
-**One-time setup (~15 min):**
+**Setup — four steps, no coding:**
 
-1. **Get an Anthropic API key** at <https://console.anthropic.com> → API Keys.
-   In **Billing → Limits**, set a low monthly spend cap — this is your real
-   protection, since the Worker URL lives in this public repo.
-2. **Create the Worker.** Easiest path: Cloudflare dashboard → **Workers &
-   Pages → Create → Worker**, name it (e.g. `spain-concierge`), **Deploy**,
-   then **Edit code** and paste the contents of `concierge-worker.js` (in this
-   repo). Deploy again. (CLI alternative: `npm i -g wrangler`, then
-   `wrangler deploy concierge-worker.js`.)
-3. **Add secrets** to the Worker (Settings → Variables and Secrets, "Encrypt"):
-   - `ANTHROPIC_API_KEY` — your key from step 1.
-   - `APP_PASSWORD` — the family password (`coconut` unless you changed it).
-   - `MODEL` *(optional)* — defaults to `claude-sonnet-4-6`; set it to
-     `claude-opus-4-8` for the most capable (and pricier) answers.
-4. **Wire it up.** Copy the Worker URL (e.g.
-   `https://spain-concierge.<you>.workers.dev`) into `CONCIERGE_ENDPOINT` near
-   the top of the script in **`index.html`** *and* **`spain-itinerary.html`**,
-   then commit and push.
-5. Open the site → **Concierge** tab and ask away. (You'll enter the family
-   password once per session so the chat can authenticate to the Worker.)
+1. **Make a Claude key.** Sign in at <https://console.anthropic.com> →
+   **API keys** → create one and copy it. Then in **Billing → Limits** set a
+   small monthly cap so it can never run up a surprise bill.
+2. **Put the helper online.** Go to <https://dash.cloudflare.com> → **Workers &
+   Pages → Create → Worker → Deploy**. Click **Edit code**, delete what's
+   there, paste in everything from `concierge-worker.js` (in this repo), and
+   click **Deploy** again.
+3. **Give it two passwords.** In that Worker → **Settings → Variables and
+   Secrets**, add two secrets:
+   - `ANTHROPIC_API_KEY` = the key from step 1
+   - `APP_PASSWORD` = `coconut` (your site password)
+4. **Connect it in the app.** Copy the Worker's address (it ends in
+   `.workers.dev`). Open the site → **Concierge** tab, paste the address in the
+   box, and press **Save**. Done — nothing to edit or push. You'll type the
+   family password once to start chatting, and you can change the address later
+   with the **Change Worker URL** link under the chat.
 
-**Security note:** because this is a public site/repo, the Worker URL and the
-family password aren't truly secret. The spend cap from step 1 is what stops
-runaway cost; the password check just deters casual drive-by use. To rotate
-access later, change `APP_PASSWORD` on the Worker (and the site password).
+*Want the smartest answers?* Add one more secret in step 3,
+`MODEL` = `claude-opus-4-8` (pricier). Otherwise it uses the fast, cheaper
+`claude-sonnet-4-6`.
+
+**Security note:** since this is a public site, the Worker address and family
+password aren't truly secret — the spend cap from step 1 is what protects you
+from runaway cost. To cut off access later, change `APP_PASSWORD` on the Worker.
 </content>
 </invoke>

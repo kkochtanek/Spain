@@ -538,8 +538,10 @@
   .chat-setup h4 { font-size:15px; font-weight:600; margin-bottom:6px; }
   .chat-setup p { font-size:13.5px; color:var(--muted); line-height:1.6; }
   .chat-setup code { background:rgba(0,0,0,.06); padding:1px 5px; border-radius:5px; font-size:12.5px; }
-  #cc-pw-form { display:flex; gap:8px; margin-top:10px; }
-  #cc-pw { flex:1; padding:9px 12px; border:1px solid rgba(24,95,165,.25); border-radius:10px; font-size:14px; font-family:inherit; }
+  #cc-pw-form, #cc-url-form { display:flex; gap:8px; margin-top:10px; }
+  #cc-pw, #cc-url { flex:1; min-width:0; padding:9px 12px; border:1px solid rgba(24,95,165,.25); border-radius:10px; font-size:14px; font-family:inherit; }
+  .chat-foot { margin-top:8px; text-align:right; }
+  .chat-reset { background:none; border:none; color:var(--muted); font-size:11.5px; font-family:inherit; cursor:pointer; text-decoration:underline; }
   .chat-suggests { display:flex; flex-wrap:wrap; gap:7px; margin-bottom:12px; }
   .chat-suggest { text-align:left; padding:8px 12px; border:1px solid rgba(24,95,165,.22); border-radius:12px; background:#fff; font-size:13px; font-family:inherit; color:#185fa5; cursor:pointer; }
   .chat-suggest:hover { background:rgba(24,95,165,.07); }
@@ -1567,6 +1569,7 @@ var conciergeMsgs = [];
 var conciergeBusy = false;
 
 function getAppPassword(){ try { return sessionStorage.getItem('spain_pw_v1') || ''; } catch(e){ return ''; } }
+function conciergeEndpoint(){ if (CONCIERGE_ENDPOINT) return CONCIERGE_ENDPOINT; try { return localStorage.getItem('spain_concierge_url') || ''; } catch(e){ return ''; } }
 
 function conciergeSystem(){
   var L = [];
@@ -1606,9 +1609,18 @@ function conciergeBubble(role, text){
 function renderConcierge(){
   var el = document.getElementById('concierge-body');
   if (!el) return;
-  if (!CONCIERGE_ENDPOINT){
+  if (!conciergeEndpoint()){
     el.innerHTML = '<div class="chat-setup"><h4>Turn on the AI concierge</h4>' +
-      '<p>This chat runs on Claude through a small private proxy, so your API key never appears in this page. One-time setup (about 15 minutes) is in <strong>SETUP.md &rarr; &ldquo;AI Concierge&rdquo;</strong>: create an Anthropic API key (set a low spend cap), deploy the included <code>concierge-worker.js</code> to a free Cloudflare Worker, then paste its URL into <code>CONCIERGE_ENDPOINT</code> in the page.</p></div>';
+      '<p>The concierge runs on Claude through your own free proxy, so no API key ever sits in this page. It is a one-time, ~15-minute setup &mdash; the four short steps are in <strong>SETUP.md &rarr; &ldquo;AI Concierge&rdquo;</strong>.</p>' +
+      '<p style="margin-top:12px">Already deployed it? Paste the Worker web address here &mdash; no code editing needed:</p>' +
+      '<form id="cc-url-form"><input type="url" id="cc-url" placeholder="https://spain-concierge.your-name.workers.dev"><button class="btn" type="submit">Save</button></form></div>';
+    document.getElementById('cc-url-form').addEventListener('submit', function(e){
+      e.preventDefault();
+      var u = document.getElementById('cc-url').value.trim().replace(/\/+$/, '');
+      if (!/^https?:\/\//i.test(u)){ var f = document.getElementById('cc-url'); f.value = ''; f.placeholder = 'Enter the full https:// address'; return; }
+      try { localStorage.setItem('spain_concierge_url', u); } catch(_){}
+      renderConcierge();
+    });
     return;
   }
   if (!getAppPassword()){
@@ -1635,10 +1647,12 @@ function renderConcierge(){
     '<form class="chat-input-row" id="chat-form">' +
       '<input type="text" id="chat-input" placeholder="Ask the concierge&hellip;" autocomplete="off"' + (conciergeBusy ? ' disabled' : '') + '>' +
       '<button class="btn" type="submit"' + (conciergeBusy ? ' disabled' : '') + '>Send</button>' +
-    '</form>';
+    '</form>' +
+    (CONCIERGE_ENDPOINT ? '' : '<div class="chat-foot"><button type="button" class="chat-reset" id="cc-reset">Change Worker URL</button></div>');
   var thr = document.getElementById('chat-thread'); if (thr) thr.scrollTop = thr.scrollHeight;
   document.getElementById('chat-form').addEventListener('submit', function(e){ e.preventDefault(); conciergeAsk(document.getElementById('chat-input').value); });
   Array.prototype.forEach.call(el.querySelectorAll('.chat-suggest'), function(b){ b.addEventListener('click', function(){ conciergeAsk(b.textContent); }); });
+  var rst = document.getElementById('cc-reset'); if (rst) rst.addEventListener('click', function(){ try { localStorage.removeItem('spain_concierge_url'); } catch(_){} conciergeMsgs = []; renderConcierge(); });
   if (!conciergeBusy){ var ci = document.getElementById('chat-input'); var sec = document.getElementById('city-ask'); if (ci && sec && sec.classList.contains('visible')) ci.focus(); }
 }
 
@@ -1648,7 +1662,7 @@ function conciergeAsk(text){
   conciergeMsgs.push({ role:'user', content:text });
   conciergeBusy = true;
   renderConcierge();
-  fetch(CONCIERGE_ENDPOINT, {
+  fetch(conciergeEndpoint(), {
     method:'POST',
     headers:{ 'Content-Type':'application/json' },
     body: JSON.stringify({ password:getAppPassword(), system:conciergeSystem(), messages:conciergeMsgs })
