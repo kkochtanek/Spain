@@ -101,5 +101,41 @@ into that day's card so the itinerary stays the single source of truth.
 - Bookings keys are public (that's normal for Firebase web apps) — security
   comes from the Firestore rules, not from hiding the config.
 - The two HTML files must carry the same `FIREBASE_CONFIG` to share data.
+
+## AI Concierge (optional)
+
+The **Concierge** tab is a chat you can ask anything about the trip — "lunch
+near our Airbnb with good wine", "what should we do on a rainy afternoon in
+Madrid", "is the Sevilla day too packed?". It runs on Claude and already knows
+your itinerary and bookings. So the API key is never exposed in this public
+page, the page talks to a tiny proxy you host (a free Cloudflare Worker); the
+proxy holds the key and checks the family password before calling Claude.
+
+**One-time setup (~15 min):**
+
+1. **Get an Anthropic API key** at <https://console.anthropic.com> → API Keys.
+   In **Billing → Limits**, set a low monthly spend cap — this is your real
+   protection, since the Worker URL lives in this public repo.
+2. **Create the Worker.** Easiest path: Cloudflare dashboard → **Workers &
+   Pages → Create → Worker**, name it (e.g. `spain-concierge`), **Deploy**,
+   then **Edit code** and paste the contents of `concierge-worker.js` (in this
+   repo). Deploy again. (CLI alternative: `npm i -g wrangler`, then
+   `wrangler deploy concierge-worker.js`.)
+3. **Add secrets** to the Worker (Settings → Variables and Secrets, "Encrypt"):
+   - `ANTHROPIC_API_KEY` — your key from step 1.
+   - `APP_PASSWORD` — the family password (`coconut` unless you changed it).
+   - `MODEL` *(optional)* — defaults to `claude-sonnet-4-6`; set it to
+     `claude-opus-4-8` for the most capable (and pricier) answers.
+4. **Wire it up.** Copy the Worker URL (e.g.
+   `https://spain-concierge.<you>.workers.dev`) into `CONCIERGE_ENDPOINT` near
+   the top of the script in **`index.html`** *and* **`spain-itinerary.html`**,
+   then commit and push.
+5. Open the site → **Concierge** tab and ask away. (You'll enter the family
+   password once per session so the chat can authenticate to the Worker.)
+
+**Security note:** because this is a public site/repo, the Worker URL and the
+family password aren't truly secret. The spend cap from step 1 is what stops
+runaway cost; the password check just deters casual drive-by use. To rotate
+access later, change `APP_PASSWORD` on the Worker (and the site password).
 </content>
 </invoke>

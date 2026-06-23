@@ -533,6 +533,24 @@
   .sum-todo-main { min-width:0; }
   .sum-todo-label { font-size:14.5px; font-weight:600; color:var(--ink); }
   .sum-todo-note { font-size:13px; color:var(--muted); line-height:1.5; margin-top:2px; }
+  .chat-intro { font-size:13.5px; color:var(--muted); line-height:1.55; margin-bottom:12px; }
+  .chat-setup { padding:16px 18px; border:1px solid rgba(24,95,165,.18); border-radius:12px; background:rgba(24,95,165,.04); }
+  .chat-setup h4 { font-size:15px; font-weight:600; margin-bottom:6px; }
+  .chat-setup p { font-size:13.5px; color:var(--muted); line-height:1.6; }
+  .chat-setup code { background:rgba(0,0,0,.06); padding:1px 5px; border-radius:5px; font-size:12.5px; }
+  #cc-pw-form { display:flex; gap:8px; margin-top:10px; }
+  #cc-pw { flex:1; padding:9px 12px; border:1px solid rgba(24,95,165,.25); border-radius:10px; font-size:14px; font-family:inherit; }
+  .chat-suggests { display:flex; flex-wrap:wrap; gap:7px; margin-bottom:12px; }
+  .chat-suggest { text-align:left; padding:8px 12px; border:1px solid rgba(24,95,165,.22); border-radius:12px; background:#fff; font-size:13px; font-family:inherit; color:#185fa5; cursor:pointer; }
+  .chat-suggest:hover { background:rgba(24,95,165,.07); }
+  .chat-thread { display:flex; flex-direction:column; gap:10px; max-height:52vh; overflow-y:auto; padding:4px 2px; margin-bottom:12px; }
+  .chat-msg { max-width:85%; padding:10px 14px; border-radius:14px; font-size:14px; line-height:1.55; }
+  .chat-user { align-self:flex-end; background:#185fa5; color:#fff; border-bottom-right-radius:4px; }
+  .chat-bot { align-self:flex-start; background:var(--paper); border:1px solid rgba(0,0,0,.08); color:var(--ink); border-bottom-left-radius:4px; }
+  .chat-typing { color:var(--muted); letter-spacing:2px; }
+  .chat-input-row { display:flex; gap:8px; }
+  #chat-input { flex:1; padding:11px 14px; border:1px solid rgba(24,95,165,.25); border-radius:12px; font-size:14px; font-family:inherit; color:var(--ink); }
+  #chat-input:focus { outline:none; border-color:#185fa5; box-shadow:0 0 0 3px rgba(24,95,165,.12); }
   .city-bookings-empty { font-size:14px; color:var(--hint); font-weight:300; font-style:italic; padding: 2px 0 4px; }
 
   @media (max-width: 520px) {
@@ -576,6 +594,7 @@
     <button class="nav-btn" data-city="mrb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="3"/><path d="M3 21c4-3 14-3 18 0M12 11v6"/></svg> Marbella</button>
     <button class="nav-btn" data-city="sev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6"/></svg> Sevilla</button>
     <button class="nav-btn" data-city="mad"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 19h18l-2-9-4 3-3-6-3 6-4-3z"/></svg> Madrid</button>
+    <button class="nav-btn" data-city="ask"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Concierge</button>
     <button class="nav-btn" data-city="plan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 11l3 3 8-8M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Plan & Bookings</button>
     <button class="nav-btn" data-city="sum"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg> Checklist</button>
   </div>
@@ -652,6 +671,18 @@
     </div>
     <p class="city-intro">A running snapshot of the trip: what's locked in, and what still needs a reservation. This updates automatically as bookings are added on the Plan &amp; Bookings tab.</p>
     <div id="summary-body"></div>
+  </section>
+
+  <!-- AI CONCIERGE -->
+  <section class="city-section" id="city-ask">
+    <div class="city-header">
+      <div class="city-badge" style="background:#efece4;color:#6b6453"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+      <div>
+        <div class="city-title">Concierge</div>
+        <div class="city-dates">Ask anything about the trip — food, plans, logistics</div>
+      </div>
+    </div>
+    <div id="concierge-body"></div>
   </section>
 
   <!-- PLAN & BOOKINGS -->
@@ -1051,6 +1082,11 @@ document.addEventListener('click', function(e) {
    Until then everything still works and saves on this device only.
    Setup steps are in SETUP.md.
    ===================================================================== */
+/* AI Concierge: paste your deployed Cloudflare Worker URL here to switch the
+   Concierge chat on (one-time setup in SETUP.md → "AI Concierge"). The Worker
+   holds the Claude API key so it never appears in this page. Leave "" for off. */
+var CONCIERGE_ENDPOINT = "";
+
 var FIREBASE_CONFIG = {
   apiKey: "",
   authDomain: "",
@@ -1524,6 +1560,110 @@ function renderSummary(){
 }
 renderSummary();
 
+/* ---- AI Concierge chat -------------------------------------------------
+   Talks to your Cloudflare Worker (CONCIERGE_ENDPOINT), which holds the
+   Claude API key. The full itinerary + bookings are sent as context. */
+var conciergeMsgs = [];
+var conciergeBusy = false;
+
+function getAppPassword(){ try { return sessionStorage.getItem('spain_pw_v1') || ''; } catch(e){ return ''; } }
+
+function conciergeSystem(){
+  var L = [];
+  L.push("You are the Kochtanek family's personal travel concierge for their trip to Spain in July 2026. They are a family of five — two parents and three kids. It is peak summer heat, so factor in air-conditioning, shade and midday breaks, and remember Spanish dinner runs late (9pm+).");
+  L.push("");
+  L.push("ITINERARY (cities, dates, day plans):");
+  CITY_ORDER.forEach(function(ck){
+    if (ck === 'general' || !DATA[ck]) return;
+    L.push("- " + CITY_NAMES[ck] + ":");
+    DATA[ck].forEach(function(day){
+      L.push("    " + day.date + " (" + day.label + "): " + day.acts.map(function(a){ return a.n; }).join("; "));
+    });
+  });
+  var booked = allBookings().filter(function(b){ return (b.status || 'booked') === 'booked'; });
+  L.push("");
+  L.push("CONFIRMED BOOKINGS:");
+  if (booked.length) booked.forEach(function(b){
+    L.push("- " + (CITY_NAMES[b.city] || '') + ": " + b.title + [b.date, b.cost, b.confirmation && ('conf ' + b.confirmation)].filter(Boolean).map(function(x){ return ' · ' + x; }).join('') + (b.notes ? " — " + b.notes : ""));
+  }); else L.push("- (none yet)");
+  L.push("");
+  L.push("STILL TO BOOK: " + CHECKLIST.filter(function(it){ return !checklistDone(it, booked); }).map(function(it){ return it.label + " (" + CITY_NAMES[it.city] + ")"; }).join("; "));
+  L.push("");
+  L.push("CURATED IDEAS PER CITY (a starting point — you may suggest others you know):");
+  Object.keys(EXPLORE).forEach(function(ck){
+    L.push("- " + CITY_NAMES[ck] + ": " + EXPLORE[ck].map(function(s){ return s.n; }).join(", "));
+  });
+  L.push("");
+  L.push("When the user says 'our Airbnb' or 'where we're staying', they mean the Barcelona Airbnb (Jul 15-17). If its exact address is not in the bookings above, say you do not have the precise address yet and answer by neighbourhood.");
+  L.push("HOW TO ANSWER: give 2-4 specific, concrete options, each with a short reason. Be concise, practical and family-aware, and flag anything that needs a reservation.");
+  return L.join("\n");
+}
+
+function conciergeBubble(role, text){
+  return '<div class="chat-msg ' + (role === 'user' ? 'chat-user' : 'chat-bot') + '">' + esc(text).replace(/\n/g, '<br>') + '</div>';
+}
+
+function renderConcierge(){
+  var el = document.getElementById('concierge-body');
+  if (!el) return;
+  if (!CONCIERGE_ENDPOINT){
+    el.innerHTML = '<div class="chat-setup"><h4>Turn on the AI concierge</h4>' +
+      '<p>This chat runs on Claude through a small private proxy, so your API key never appears in this page. One-time setup (about 15 minutes) is in <strong>SETUP.md &rarr; &ldquo;AI Concierge&rdquo;</strong>: create an Anthropic API key (set a low spend cap), deploy the included <code>concierge-worker.js</code> to a free Cloudflare Worker, then paste its URL into <code>CONCIERGE_ENDPOINT</code> in the page.</p></div>';
+    return;
+  }
+  if (!getAppPassword()){
+    el.innerHTML = '<div class="chat-setup"><h4>Enter the family password to chat</h4>' +
+      '<form id="cc-pw-form"><input type="password" id="cc-pw" placeholder="Family password" autocomplete="current-password"><button class="btn" type="submit">Enable</button></form></div>';
+    document.getElementById('cc-pw-form').addEventListener('submit', function(e){
+      e.preventDefault();
+      var v = document.getElementById('cc-pw').value.trim().toLowerCase();
+      sha256hex(v).then(function(h){
+        if (h === PASS_HASH){ try { sessionStorage.setItem('spain_pw_v1', v); } catch(_){} renderConcierge(); }
+        else { var f = document.getElementById('cc-pw'); f.value = ''; f.placeholder = 'Try again'; }
+      });
+    });
+    return;
+  }
+  var suggestions = ['Lunch near our Barcelona Airbnb with good wine','A cool, shaded afternoon in Sevilla with the kids','Best paella near Barceloneta beach','Easy dinner in Marbella that works for kids'];
+  var chips = conciergeMsgs.length ? '' : '<div class="chat-suggests">' + suggestions.map(function(s){ return '<button type="button" class="chat-suggest">' + esc(s) + '</button>'; }).join('') + '</div>';
+  var thread = conciergeMsgs.map(function(m){ return conciergeBubble(m.role, m.content); }).join('') +
+    (conciergeBusy ? '<div class="chat-msg chat-bot chat-typing">&hellip;</div>' : '');
+  el.innerHTML =
+    '<div class="chat-intro">Ask me anything about the trip &mdash; &ldquo;lunch near our Airbnb with good wine&rdquo;, &ldquo;what to do on a rainy afternoon in Madrid&rdquo;, &ldquo;is the Sevilla day too packed?&rdquo;. I know your itinerary and bookings.</div>' +
+    chips +
+    '<div class="chat-thread" id="chat-thread">' + thread + '</div>' +
+    '<form class="chat-input-row" id="chat-form">' +
+      '<input type="text" id="chat-input" placeholder="Ask the concierge&hellip;" autocomplete="off"' + (conciergeBusy ? ' disabled' : '') + '>' +
+      '<button class="btn" type="submit"' + (conciergeBusy ? ' disabled' : '') + '>Send</button>' +
+    '</form>';
+  var thr = document.getElementById('chat-thread'); if (thr) thr.scrollTop = thr.scrollHeight;
+  document.getElementById('chat-form').addEventListener('submit', function(e){ e.preventDefault(); conciergeAsk(document.getElementById('chat-input').value); });
+  Array.prototype.forEach.call(el.querySelectorAll('.chat-suggest'), function(b){ b.addEventListener('click', function(){ conciergeAsk(b.textContent); }); });
+  if (!conciergeBusy){ var ci = document.getElementById('chat-input'); var sec = document.getElementById('city-ask'); if (ci && sec && sec.classList.contains('visible')) ci.focus(); }
+}
+
+function conciergeAsk(text){
+  text = (text || '').trim();
+  if (!text || conciergeBusy) return;
+  conciergeMsgs.push({ role:'user', content:text });
+  conciergeBusy = true;
+  renderConcierge();
+  fetch(CONCIERGE_ENDPOINT, {
+    method:'POST',
+    headers:{ 'Content-Type':'application/json' },
+    body: JSON.stringify({ password:getAppPassword(), system:conciergeSystem(), messages:conciergeMsgs })
+  }).then(function(r){ return r.json().then(function(d){ return { ok:r.ok, d:d }; }); })
+    .then(function(res){
+      conciergeBusy = false;
+      if (res.ok && res.d && res.d.text){ conciergeMsgs.push({ role:'assistant', content:res.d.text }); }
+      else { conciergeMsgs.push({ role:'assistant', content:'⚠️ ' + ((res.d && res.d.error) || 'Something went wrong. Check the concierge setup in SETUP.md.') }); }
+      renderConcierge();
+    })
+    .catch(function(){ conciergeBusy = false; conciergeMsgs.push({ role:'assistant', content:'⚠️ Could not reach the concierge service. Check your connection and the Worker URL.' }); renderConcierge(); });
+}
+
+renderConcierge();
+
 /* ---- Form: add / edit ---- */
 var editId = null;
 var form = document.getElementById('booking-form');
@@ -1626,6 +1766,7 @@ document.getElementById('gate-form').addEventListener('submit', async function(e
   var h = await sha256hex(input.value.trim().toLowerCase());
   if (h === PASS_HASH) {
     localStorage.setItem(GATE_KEY, PASS_HASH);
+    try { sessionStorage.setItem('spain_pw_v1', input.value.trim().toLowerCase()); } catch(e){}
     err.classList.remove('show');
     unlock();
   } else {
