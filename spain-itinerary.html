@@ -519,6 +519,20 @@
   .explore-tags { display:flex; flex-wrap:wrap; gap:5px; }
   .explore-tag { font-size:11px; text-transform:capitalize; color:#185fa5; background:rgba(24,95,165,.09); padding:2px 8px; border-radius:999px; }
   .explore-empty { font-size:13px; color:var(--muted); font-style:italic; }
+  .sum-progress { margin-bottom:6px; }
+  .sum-progress-bar { height:10px; border-radius:999px; background:rgba(24,95,165,.12); overflow:hidden; }
+  .sum-progress-bar span { display:block; height:100%; background:#2e8b57; border-radius:999px; transition:width .3s; }
+  .sum-progress-label { margin-top:7px; font-size:13px; color:var(--muted); }
+  .sum-h { font-size:18px; font-weight:600; margin:26px 0 12px; display:flex; align-items:center; gap:9px; }
+  .sum-count { font-size:13px; font-weight:600; color:#185fa5; background:rgba(24,95,165,.1); border-radius:999px; padding:2px 10px; }
+  .sum-group { margin-bottom:16px; }
+  .sum-group h4 { font-size:12px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); margin-bottom:8px; }
+  .sum-todo { list-style:none; display:grid; gap:8px; }
+  .sum-todo li { display:flex; gap:11px; align-items:flex-start; padding:11px 13px; border:1px solid rgba(214,11,30,.16); border-left:3px solid #d60b1e; border-radius:10px; background:rgba(214,11,30,.03); }
+  .sum-type { flex-shrink:0; font-size:10.5px; text-transform:uppercase; letter-spacing:.03em; color:#b00718; background:rgba(214,11,30,.1); border-radius:999px; padding:3px 9px; margin-top:1px; }
+  .sum-todo-main { min-width:0; }
+  .sum-todo-label { font-size:14.5px; font-weight:600; color:var(--ink); }
+  .sum-todo-note { font-size:13px; color:var(--muted); line-height:1.5; margin-top:2px; }
   .city-bookings-empty { font-size:14px; color:var(--hint); font-weight:300; font-style:italic; padding: 2px 0 4px; }
 
   @media (max-width: 520px) {
@@ -563,6 +577,7 @@
     <button class="nav-btn" data-city="sev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6"/></svg> Sevilla</button>
     <button class="nav-btn" data-city="mad"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 19h18l-2-9-4 3-3-6-3 6-4-3z"/></svg> Madrid</button>
     <button class="nav-btn" data-city="plan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 11l3 3 8-8M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Plan & Bookings</button>
+    <button class="nav-btn" data-city="sum"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg> Checklist</button>
   </div>
 
   <!-- BARCELONA -->
@@ -624,6 +639,19 @@
     <p class="city-intro">Two full days in the capital. Madrid is cooler than Sevilla, greener, and has a completely different energy. World-class museums, incredible food markets, and a park that could absorb a whole day. Relaxed final stretch before heading home.</p>
     <div class="city-extras" id="extras-mad"></div>
     <div id="days-mad"></div>
+  </section>
+
+  <!-- CHECKLIST -->
+  <section class="city-section" id="city-sum">
+    <div class="city-header">
+      <div class="city-badge" style="background:#efece4;color:#6b6453"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg></div>
+      <div>
+        <div class="city-title">Booked &amp; To-Book</div>
+        <div class="city-dates">Everything confirmed, and everything still on the list</div>
+      </div>
+    </div>
+    <p class="city-intro">A running snapshot of the trip: what's locked in, and what still needs a reservation. This updates automatically as bookings are added on the Plan &amp; Bookings tab.</p>
+    <div id="summary-body"></div>
   </section>
 
   <!-- PLAN & BOOKINGS -->
@@ -1248,6 +1276,7 @@ async function initStore() {
     BOOKINGS = d;
     renderBookings();
     renderAllCityExtras();
+    renderSummary();
   });
   if (store.subscribeOutline) store.subscribeOutline(function(arr){
     if (Array.isArray(arr) && arr.length) {
@@ -1415,6 +1444,85 @@ function renderAllCityExtras() {
   ['bcn','mrb','sev','mad'].forEach(renderCityExtras);
 }
 renderAllCityExtras();
+
+/* ---- Booked & to-book checklist ----------------------------------------
+   The essentials the trip needs. An item counts as "booked" when a logged
+   booking matches it (by city + type, or by a keyword in the title), so the
+   lists below stay in sync as bookings are added on the Plan tab. */
+var CHECKLIST = [
+  { key:'bcn-stay', city:'bcn', type:'lodging', label:'Barcelona lodging', note:'Family suite or apartment in Eixample — AC essential in July.' },
+  { key:'bcn-flight', city:'bcn', type:'flight', label:'Flights to Barcelona', note:'Outbound STL → PHL → BCN.' },
+  { key:'bcn-sagrada', city:'bcn', type:'activity', label:'Sagrada Família tickets', note:'Book the first morning slot; add tower access for the older kids.', match:['sagrada'] },
+  { key:'bcn-guell', city:'bcn', type:'activity', label:'Park Güell tickets', note:'Early monumental-zone slot the same morning.', match:['güell','guell'] },
+  { key:'mrb-stay', city:'mrb', type:'lodging', label:'Marbella villa or resort', note:'Private-pool villa or family resort — 5 nights.' },
+  { key:'mrb-car', city:'mrb', type:'transport', label:'Rental car (7-seater)', note:'Pick up at Málaga (AGP), drop in Sevilla.' },
+  { key:'mrb-ronda', city:'mrb', type:'activity', label:'Ronda day trip', note:'Optional timed entry or lunch reservation.', match:['ronda'] },
+  { key:'sev-stay', city:'sev', type:'lodging', label:'Sevilla hotel with pool', note:'Non-negotiable in the July heat.' },
+  { key:'sev-alcazar', city:'sev', type:'activity', label:'Real Alcázar tickets', note:'Very first slot of the day.', match:['alcázar','alcazar'] },
+  { key:'sev-flamenco', city:'sev', type:'activity', label:'Flamenco show (5 seats)', note:'Casa de la Memoria, early ~7pm show.', match:['flamenco'] },
+  { key:'sev-ave', city:'sev', type:'transport', label:'AVE Sevilla → Madrid', note:'Renfe, Preferente class, ~2.5 hrs.', match:['ave','renfe','madrid'] },
+  { key:'mad-stay', city:'mad', type:'lodging', label:'Madrid hotel near Retiro', note:'A pool still earns its keep with kids.' },
+  { key:'mad-flight', city:'mad', type:'flight', label:'Flight home from Madrid', note:'Return MAD → ORD → STL.' },
+  { key:'mad-prado', city:'mad', type:'activity', label:'Prado & Royal Palace tickets', note:'Timed entries; consider Warner Bros. Park as a kids\' reward.', match:['prado','palace','royal'] },
+  { key:'mad-dinner', city:'mad', type:'dining', label:'Final celebratory dinner', note:'Book somewhere special for the last night.', match:['botín','botin','lhardy','dinner'] }
+];
+function checklistDone(item, booked){
+  return booked.some(function(b){
+    if ((b.city || '') !== item.city) return false;
+    if (item.match){ var t = (b.title || '').toLowerCase(); return item.match.some(function(k){ return t.indexOf(k) >= 0; }); }
+    return b.type === item.type;
+  });
+}
+function sumBookedHTML(b){
+  var url = safeUrl(b.link);
+  var metaParts = [b.date, b.time, b.cost, b.confirmation && ('Conf: ' + b.confirmation)].filter(Boolean).map(esc);
+  var meta = metaParts.join(' · ');
+  var link = url ? (meta ? ' · ' : '') + '<a href="' + esc(url) + '" target="_blank" rel="noopener">open link</a>' : '';
+  return '<div class="booking-card" data-id="' + esc(b.id) + '">' +
+    '<div class="bc-top"><span class="status-badge status-booked">' + (STATUS_LABELS.booked || 'Booked') + '</span>' +
+    '<span class="bc-title">' + esc(b.title || '(untitled)') + '</span>' +
+    '<span class="type-chip">' + (TYPE_LABELS[b.type] || '') + '</span></div>' +
+    (meta || link ? '<div class="bc-meta">' + meta + link + '</div>' : '') +
+    (b.notes ? '<div class="bc-notes">' + esc(b.notes) + '</div>' : '') +
+  '</div>';
+}
+function renderSummary(){
+  var el = document.getElementById('summary-body');
+  if (!el) return;
+  var booked = allBookings().filter(function(b){ return (b.status || 'booked') === 'booked'; });
+  var done = CHECKLIST.filter(function(it){ return checklistDone(it, booked); });
+  var todo = CHECKLIST.filter(function(it){ return !checklistDone(it, booked); });
+  var pct = CHECKLIST.length ? Math.round(done.length / CHECKLIST.length * 100) : 0;
+  var html = '<div class="sum-progress"><div class="sum-progress-bar"><span style="width:' + pct + '%"></span></div>' +
+    '<div class="sum-progress-label">' + done.length + ' of ' + CHECKLIST.length + ' trip essentials booked (' + pct + '%)</div></div>';
+  html += '<h3 class="sum-h">Booked <span class="sum-count">' + booked.length + '</span></h3>';
+  if (!booked.length){
+    html += '<p class="city-bookings-empty">Nothing booked yet.</p>';
+  } else {
+    CITY_ORDER.forEach(function(ck){
+      var items = booked.filter(function(b){ return (b.city || 'general') === ck; });
+      if (!items.length) return;
+      html += '<div class="sum-group"><h4>' + esc(CITY_NAMES[ck]) + '</h4>' + items.map(sumBookedHTML).join('') + '</div>';
+    });
+  }
+  html += '<h3 class="sum-h">Still to book <span class="sum-count">' + todo.length + '</span></h3>';
+  if (!todo.length){
+    html += '<p class="city-bookings-empty">Everything essential is booked — nicely done.</p>';
+  } else {
+    CITY_ORDER.forEach(function(ck){
+      var items = todo.filter(function(it){ return it.city === ck; });
+      if (!items.length) return;
+      html += '<div class="sum-group"><h4>' + esc(CITY_NAMES[ck]) + '</h4><ul class="sum-todo">' +
+        items.map(function(it){
+          return '<li><span class="sum-type">' + esc(TYPE_LABELS[it.type] || it.type) + '</span>' +
+            '<div class="sum-todo-main"><div class="sum-todo-label">' + esc(it.label) + '</div>' +
+            (it.note ? '<div class="sum-todo-note">' + esc(it.note) + '</div>' : '') + '</div></li>';
+        }).join('') + '</ul></div>';
+    });
+  }
+  el.innerHTML = html;
+}
+renderSummary();
 
 /* ---- Form: add / edit ---- */
 var editId = null;
