@@ -134,6 +134,24 @@ proxy holds the key and checks the family password before calling Claude.
 `MODEL` = `claude-opus-4-8` (pricier). Otherwise it uses the fast, cheaper
 `claude-sonnet-4-6`.
 
+### Live Google ratings on each recommendation (optional)
+
+When set up, every place the concierge names shows its live star rating and
+review count (e.g. `4.5★ · 3,204 reviews`) next to its Map link. Without this
+key the links still work — you just tap to see the numbers on Google Maps.
+
+1. **Turn on the Places API.** Go to <https://console.cloud.google.com>, create
+   a project, then enable **Places API (New)** (APIs & Services → Library →
+   search "Places API (New)" → **Enable**). You'll need billing enabled; set a
+   budget/quota cap so it can't overspend.
+2. **Make a key.** APIs & Services → **Credentials** → **Create credentials →
+   API key**. Copy it. (Recommended: restrict it to the Places API.)
+3. **Add it to the Worker.** In the Worker → Settings → Variables and Secrets,
+   add `GOOGLE_PLACES_KEY` = that key (type **Secret**), then **Deploy**.
+
+After adding the key, re-paste the latest `concierge-worker.js` into the Worker
+and Deploy so it has the rating-lookup code.
+
 **Security note:** since this is a public site, the Worker address and family
 password aren't truly secret — the spend cap from step 1 is what protects you
 from runaway cost. To cut off access later, change `APP_PASSWORD` on the Worker.

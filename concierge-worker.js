@@ -11,6 +11,9 @@
  * Optional:
  *   MODEL              – defaults to "claude-sonnet-4-6"
  *                        (use "claude-opus-4-8" for the most capable answers)
+ *   GOOGLE_PLACES_KEY  – a Google Places API (New) key. When set, every Maps
+ *                        link is prefixed with the place's live star rating
+ *                        and review count. Omit it and links still work.
  *
  * Deploy: paste into a new Worker in the Cloudflare dashboard, or
  *   `wrangler deploy concierge-worker.js`. Full steps in SETUP.md.
@@ -26,6 +29,61 @@ function json(obj, status) {
   return new Response(JSON.stringify(obj), {
     status,
     headers: { 'content-type': 'application/json', ...CORS },
+  });
+}
+
+// Regex for the Google Maps links the concierge produces:
+//   [📍 Map](https://www.google.com/maps/search/?api=1&query=ENCODED)
+const MAPS_LINK_RE = /\[([^\]]*)\]\((https:\/\/www\.google\.com\/maps\/search\/\?api=1&query=([^)\s]+))\)/g;
+
+// Look up one place's live rating + review count via the Places API (New).
+async function placeRating(query, key) {
+  const resp = await fetch('https://places.googleapis.com/v1/places:searchText', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Goog-Api-Key': key,
+      'X-Goog-FieldMask': 'places.rating,places.userRatingCount',
+    },
+    body: JSON.stringify({ textQuery: query, maxResultCount: 1 }),
+  });
+  const d = await resp.json().catch(() => ({}));
+  const p = d.places && d.places[0];
+  if (p && typeof p.rating === 'number') {
+    return { rating: p.rating, count: p.userRatingCount || 0 };
+  }
+  return null;
+}
+
+// Prefix each Maps link with its live "4.5★ · 3,204 reviews · ". Links with no
+// match are left untouched (never invent numbers).
+async function enrichWithRatings(text, key) {
+  const queries = [];
+  let m;
+  while ((m = MAPS_LINK_RE.exec(text)) !== null) {
+    if (queries.indexOf(m[3]) === -1) queries.push(m[3]);
+  }
+  MAPS_LINK_RE.lastIndex = 0;
+  if (!queries.length) return text;
+
+  const capped = queries.slice(0, 8); // cap lookups to control cost + latency
+  const ratings = {};
+  await Promise.all(
+    capped.map(async (q) => {
+      try {
+        const human = decodeURIComponent(q.replace(/\+/g, ' '));
+        const info = await placeRating(human, key);
+        if (info) ratings[q] = info;
+      } catch (e) { /* ignore a single failed lookup */ }
+    })
+  );
+
+  return text.replace(MAPS_LINK_RE, (full, label, url, q) => {
+    const info = ratings[q];
+    if (!info) return full;
+    const stars = info.rating.toFixed(1) + '★';
+    const reviews = info.count ? ' · ' + info.count.toLocaleString('en-US') + ' reviews' : '';
+    return stars + reviews + ' · [' + label + '](' + url + ')';
   });
 }
 
@@ -76,12 +134,17 @@ export default {
       return json({ error: (data.error && data.error.message) || 'Claude API error.' }, resp.status);
     }
 
-    const text = (data.content || [])
+    let text = (data.content || [])
       .filter((b) => b.type === 'text')
       .map((b) => b.text)
       .join('\n')
-      .trim();
+      .trim() || '(no response)';
 
-    return json({ text: text || '(no response)' }, 200);
+    // If a Places key is configured, add live ratings to each Maps link.
+    if (env.GOOGLE_PLACES_KEY) {
+      try { text = await enrichWithRatings(text, env.GOOGLE_PLACES_KEY); } catch (e) { /* keep plain text */ }
+    }
+
+    return json({ text }, 200);
   },
 };
