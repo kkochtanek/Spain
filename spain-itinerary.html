@@ -549,6 +549,8 @@
   .chat-msg { max-width:85%; padding:10px 14px; border-radius:14px; font-size:14px; line-height:1.55; }
   .chat-user { align-self:flex-end; background:#185fa5; color:#fff; border-bottom-right-radius:4px; }
   .chat-bot { align-self:flex-start; background:var(--paper); border:1px solid rgba(0,0,0,.08); color:var(--ink); border-bottom-left-radius:4px; }
+  .chat-bot a { color:#185fa5; text-decoration:underline; overflow-wrap:anywhere; font-weight:600; }
+  .chat-user a { color:#fff; text-decoration:underline; overflow-wrap:anywhere; }
   .chat-typing { color:var(--muted); letter-spacing:2px; }
   .chat-input-row { display:flex; gap:8px; }
   #chat-input { flex:1; padding:11px 14px; border:1px solid rgba(24,95,165,.25); border-radius:12px; font-size:14px; font-family:inherit; color:var(--ink); }
@@ -1599,11 +1601,24 @@ function conciergeSystem(){
   L.push("");
   L.push("When the user says 'our Airbnb' or 'where we're staying', they mean the Barcelona Airbnb (Jul 15-17). If its exact address is not in the bookings above, say you do not have the precise address yet and answer by neighbourhood.");
   L.push("HOW TO ANSWER: give 2-4 specific, concrete options, each with a short reason. Be concise, practical and family-aware, and flag anything that needs a reservation.");
+  L.push("LINKS: for every specific place you name (restaurant, sight, bar, beach, market, etc.), add a Google Maps link immediately after the name, formatted exactly as a markdown link with the visible text 'Map' followed by a pin emoji, like this: [📍 Map](https://www.google.com/maps/search/?api=1&query=ENCODED) where ENCODED is the place name plus its city/neighbourhood, URL-encoded (spaces as %20, commas as %2C). The user taps this to see the live Google star rating and review count. Do NOT state star ratings or review counts yourself — you have no live data and must not invent them; the link is how the user gets the real numbers.");
   return L.join("\n");
 }
 
+function conciergeLinkify(s){
+  // Markdown links [text](url) -> anchors
+  s = s.replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, function(m, txt, url){
+    return '<a href="' + url + '" target="_blank" rel="noopener noreferrer">' + txt + '</a>';
+  });
+  // Bare URLs not already inside an anchor (prefixed by start, space, '(' or '>')
+  s = s.replace(/(^|[\s(>])(https?:\/\/[^\s<)]+)/g, function(m, pre, url){
+    return pre + '<a href="' + url + '" target="_blank" rel="noopener noreferrer">' + url + '</a>';
+  });
+  return s;
+}
+
 function conciergeBubble(role, text){
-  return '<div class="chat-msg ' + (role === 'user' ? 'chat-user' : 'chat-bot') + '">' + esc(text).replace(/\n/g, '<br>') + '</div>';
+  return '<div class="chat-msg ' + (role === 'user' ? 'chat-user' : 'chat-bot') + '">' + conciergeLinkify(esc(text).replace(/\n/g, '<br>')) + '</div>';
 }
 
 function renderConcierge(){
