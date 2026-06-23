@@ -499,7 +499,26 @@
   .concierge li:last-child { border-bottom:none; }
   .concierge li strong { font-weight:500; color: var(--ink); }
   .concierge .note { font-style: italic; color: var(--muted); }
-  .concierge .tweak { margin-top:10px; padding-top:10px; border-top:1px solid rgba(24,95,165,.12); font-size:13px; font-style:italic; color:var(--muted); line-height:1.55; }
+  .explore { margin-top:18px; }
+  .explore h4 { display:flex; align-items:center; gap:8px; font-size:16px; font-weight:600; margin-bottom:4px; }
+  .explore h4 svg { width:18px; height:18px; flex-shrink:0; }
+  .explore-sub { font-size:13px; color:var(--muted); margin-bottom:10px; line-height:1.5; }
+  .explore-controls { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px; }
+  .explore-input { flex:1 1 220px; min-width:0; padding:9px 12px; border:1px solid rgba(24,95,165,.25); border-radius:10px; font-size:14px; font-family:inherit; color:var(--ink); background:#fff; }
+  .explore-input:focus { outline:none; border-color:#185fa5; box-shadow:0 0 0 3px rgba(24,95,165,.12); }
+  .explore-shuffle { padding:9px 13px; border:1px solid rgba(24,95,165,.25); border-radius:10px; background:#fff; font-size:13px; font-family:inherit; color:#185fa5; cursor:pointer; white-space:nowrap; }
+  .explore-shuffle:hover { background:rgba(24,95,165,.07); }
+  .explore-chips { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; }
+  .explore-chips .chip { padding:5px 11px; border:1px solid rgba(24,95,165,.22); border-radius:999px; background:#fff; font-size:12.5px; font-family:inherit; color:var(--muted); cursor:pointer; transition:all .12s; }
+  .explore-chips .chip:hover { border-color:#185fa5; color:#185fa5; }
+  .explore-chips .chip.is-on { background:#185fa5; border-color:#185fa5; color:#fff; }
+  .explore-results { display:grid; gap:10px; }
+  .explore-card { padding:12px 14px; border:1px solid rgba(24,95,165,.14); border-radius:12px; background:rgba(24,95,165,.03); }
+  .explore-card-h { font-size:14.5px; font-weight:600; color:var(--ink); margin-bottom:3px; }
+  .explore-card p { font-size:13.5px; line-height:1.5; color:var(--muted); margin:0 0 8px; font-weight:300; }
+  .explore-tags { display:flex; flex-wrap:wrap; gap:5px; }
+  .explore-tag { font-size:11px; text-transform:capitalize; color:#185fa5; background:rgba(24,95,165,.09); padding:2px 8px; border-radius:999px; }
+  .explore-empty { font-size:13px; color:var(--muted); font-style:italic; }
   .city-bookings-empty { font-size:14px; color:var(--hint); font-weight:300; font-style:italic; padding: 2px 0 4px; }
 
   @media (max-width: 520px) {
@@ -1070,6 +1089,60 @@ var SUGGESTIONS = {
   }
 };
 
+/* ---- "Where to go" explorer pool (interactive, per city) ---- */
+var EXPLORE = {
+  bcn: [
+    { n:'Sagrada Família', d:"Gaudí's still-unfinished basilica — book the first morning slot and add tower access for the older kids.", tags:['culture','history','kids'] },
+    { n:'Park Güell', d:'Mosaic terraces and skyline views; reserve an early monumental-zone slot before the heat.', tags:['culture','outdoors','views','kids'] },
+    { n:'Gothic Quarter', d:'Medieval lanes, the cathedral and hidden plazas — shady and walkable in the midday sun.', tags:['culture','history','food'] },
+    { n:'El Born & Picasso Museum', d:'Galleries, boutiques and some of the best tapas bars in the city.', tags:['culture','food','shopping'] },
+    { n:'Barceloneta Beach', d:'City beach with chiringuitos and beachfront paella — an easy afternoon with the kids.', tags:['beach','food','relax','kids'] },
+    { n:'Montjuïc', d:'Cable car up to the castle and gardens, with the Magic Fountain light show after dark.', tags:['views','outdoors','kids'] },
+    { n:'Bunkers del Carmel', d:'The best free panorama in Barcelona — a low-key spot for sunset.', tags:['views','outdoors','nightlife'] },
+    { n:'La Boqueria Market', d:'Iconic food market just off La Rambla — juices, jamón and counter stools.', tags:['food','culture'] },
+    { n:'Passeig de Gràcia', d:"Gaudí's wave-fronted Casa Batlló and La Pedrera line the city's grand shopping avenue.", tags:['culture','shopping','views'] },
+    { n:'Montserrat day trip', d:'Mountain monastery an hour out, reached by a dramatic rack railway — a cool change of pace.', tags:['daytrip','outdoors','views'] }
+  ],
+  mrb: [
+    { n:'Puerto Banús', d:'Glossy marina with yachts, designer shops and buzzy dinner spots.', tags:['shopping','nightlife','food'] },
+    { n:'Marbella Old Town', d:'Plaza de los Naranjos and whitewashed lanes — pretty and easy for an evening stroll.', tags:['culture','history','food'] },
+    { n:'Playa de la Fontanilla', d:'Central sandy beach with gentle water and loungers — a simple beach day.', tags:['beach','relax','kids'] },
+    { n:'Beach club lunch', d:'Trocadero or Playa Padre for a long, lazy lunch with toes near the sand.', tags:['beach','food','relax','nightlife'] },
+    { n:'Ronda day trip', d:'Clifftop town split by a 120m gorge and its famous bridge — unforgettable views.', tags:['daytrip','views','culture'] },
+    { n:'Nerja & Frigiliana', d:'Sea caves and a postcard white village in the hills east of town.', tags:['daytrip','outdoors','culture'] },
+    { n:'Golden Mile promenade', d:'Flat seafront walk or bike all the way to Puerto Banús.', tags:['outdoors','relax'] },
+    { n:'La Concha viewpoint', d:'The mountain over Marbella — short hikes to big coastal views.', tags:['outdoors','views'] },
+    { n:'Selwo Aventura', d:'Drive-and-walk safari park — a guaranteed win with the kids.', tags:['kids','outdoors'] }
+  ],
+  sev: [
+    { n:'Real Alcázar', d:'Moorish palace and gardens (a Game of Thrones set) — book the very first slot to beat the heat.', tags:['culture','history','views'] },
+    { n:'Catedral & Giralda', d:"The world's largest Gothic cathedral; climb the ramped bell tower for rooftop views.", tags:['culture','history','views'] },
+    { n:'Plaza de España', d:'Vast tiled plaza with a canal you can row — magical early or late in the day.', tags:['culture','kids','views'] },
+    { n:'Barrio Santa Cruz', d:'Orange-tree lanes and tucked-away tapas in the old quarter.', tags:['culture','food','history'] },
+    { n:'Flamenco at Casa de la Memoria', d:'Intimate early-evening show — reserve five seats well ahead.', tags:['culture','nightlife'] },
+    { n:'Triana', d:'Ceramics shops, a covered market and riverside tapas across the bridge.', tags:['food','culture','shopping'] },
+    { n:'Las Setas (Metropol Parasol)', d:'Walk the wavy rooftop of the giant wooden "mushrooms" for city views.', tags:['views','kids'] },
+    { n:'Guadalquivir by boat or kayak', d:'Get on the river to cool off — cruises or paddle craft from the bank.', tags:['outdoors','relax','kids'] },
+    { n:'Isla Mágica', d:'Theme and water park — a heat-beating day the kids will lobby for.', tags:['kids','relax'] }
+  ],
+  mad: [
+    { n:'Museo del Prado', d:'Velázquez, Goya and Bosch under one roof — grab timed tickets in advance.', tags:['culture','history'] },
+    { n:'Retiro Park', d:"Row on the lake, find the Crystal Palace, let the kids run — the city's green heart.", tags:['outdoors','kids','relax'] },
+    { n:'Royal Palace', d:"Opulent state rooms and the changing of the guard in Europe's largest royal palace.", tags:['culture','history'] },
+    { n:'Plaza Mayor & Puerta del Sol', d:'Historic arcaded heart of Madrid — churros con chocolate at San Ginés.', tags:['culture','food','kids'] },
+    { n:'Mercado de San Miguel', d:'Glass-walled gourmet market for a graze-as-you-go tapas dinner.', tags:['food','culture'] },
+    { n:'Gran Vía', d:"Madrid's grand boulevard — shops by day, rooftop bars by night.", tags:['shopping','nightlife','views'] },
+    { n:'Templo de Debod', d:'A real Egyptian temple with the best free sunset in the city.', tags:['views','outdoors'] },
+    { n:'Sobrino de Botín', d:"The world's oldest restaurant (1725) — roast suckling pig and a story the kids will love.", tags:['food','history'] },
+    { n:'Parque Warner Madrid', d:"Big theme-park day out as the kids' reward.", tags:['kids','daytrip'] }
+  ]
+};
+var EXPLORE_STATE = {};
+var EXPLORE_VIBES = [
+  ['culture','Culture'], ['food','Food'], ['beach','Beach'], ['outdoors','Outdoors'],
+  ['views','Views'], ['kids','Kids'], ['nightlife','Nightlife'], ['daytrip','Day trip'], ['relax','Relax']
+];
+
 /* ---- Confirmed bookings ---------------------------------------------
    These are logged from real confirmations (emails / screenshots) and are
    baked into the site, so they always show for everyone. As Kyle & Alyssa
@@ -1242,8 +1315,87 @@ function conciergeHTML(ck) {
   if (s.note) lis += '<li class="note">' + esc(s.note) + '</li>';
   return '<div class="concierge">' +
       '<h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2l2.4 5 5.6.5-4.2 3.7 1.3 5.5L12 19l-5.1 2.7 1.3-5.5L4 12.5 9.6 12z"/></svg> Concierge picks — ' + esc(CITY_NAMES[ck]) + '</h4>' +
-      '<ul>' + lis + '</ul>' +
-      '<p class="tweak">Want different ideas? Tell the concierge which city you\'re looking at and what you\'re after — beach, food, culture, or keeping the kids happy — and these picks get retuned.</p></div>';
+      '<ul>' + lis + '</ul></div>';
+}
+
+function exploreState(ck){
+  if (!EXPLORE_STATE[ck]) EXPLORE_STATE[ck] = { q:'', vibes:[], seed:Math.random() };
+  return EXPLORE_STATE[ck];
+}
+function exploreShuffle(arr, seed){
+  var a = arr.slice(), s = Math.floor(seed * 100000) % 233280 || 1;
+  for (var i = a.length - 1; i > 0; i--){
+    s = (s * 9301 + 49297) % 233280;
+    var j = Math.floor((s / 233280) * (i + 1));
+    var t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+function exploreMatches(ck){
+  var st = exploreState(ck), pool = (EXPLORE[ck] || []);
+  var q = st.q.trim().toLowerCase();
+  var terms = q ? q.split(/\s+/).filter(Boolean) : [];
+  if (!terms.length && !st.vibes.length) return exploreShuffle(pool, st.seed).slice(0, 4);
+  var scored = pool.map(function(s){
+    var score = 0, hay = (s.n + ' ' + s.d + ' ' + s.tags.join(' ')).toLowerCase();
+    st.vibes.forEach(function(v){ if (s.tags.indexOf(v) >= 0) score += 2; });
+    terms.forEach(function(t){ if (hay.indexOf(t) >= 0) score += 1; });
+    return { s:s, score:score };
+  }).filter(function(x){ return x.score > 0; });
+  scored.sort(function(a, b){ return b.score - a.score; });
+  return scored.slice(0, 5).map(function(x){ return x.s; });
+}
+function exploreCardHTML(s){
+  var tags = s.tags.map(function(t){ return '<span class="explore-tag">' + esc(t) + '</span>'; }).join('');
+  return '<div class="explore-card"><div class="explore-card-h">' + esc(s.n) + '</div>' +
+    '<p>' + esc(s.d) + '</p><div class="explore-tags">' + tags + '</div></div>';
+}
+function renderExploreResults(ck){
+  var box = document.querySelector('#explore-' + ck + ' .explore-results');
+  if (!box) return;
+  var spots = exploreMatches(ck);
+  box.innerHTML = spots.length
+    ? spots.map(exploreCardHTML).join('')
+    : '<p class="explore-empty">No matches — try a different vibe or word.</p>';
+}
+function exploreHTML(ck){
+  if (!EXPLORE[ck]) return '';
+  var st = exploreState(ck);
+  var chips = EXPLORE_VIBES.map(function(v){
+    var on = st.vibes.indexOf(v[0]) >= 0 ? ' is-on' : '';
+    return '<button type="button" class="chip' + on + '" data-vibe="' + v[0] + '">' + esc(v[1]) + '</button>';
+  }).join('');
+  return '<div class="explore" id="explore-' + ck + '">' +
+    '<h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">' + ICONS.map + '</svg> Where to go — ' + esc(CITY_NAMES[ck]) + '</h4>' +
+    '<p class="explore-sub">Type what you\'re after, or tap a vibe — the concierge resurfaces matching spots.</p>' +
+    '<div class="explore-controls">' +
+      '<input type="text" class="explore-input" placeholder="e.g. beach + easy with kids" value="' + esc(st.q) + '" aria-label="What are you after?">' +
+      '<button type="button" class="explore-shuffle">Surprise me</button>' +
+    '</div>' +
+    '<div class="explore-chips">' + chips + '</div>' +
+    '<div class="explore-results"></div></div>';
+}
+function bindExplore(ck){
+  var root = document.getElementById('explore-' + ck);
+  if (!root) return;
+  var st = exploreState(ck);
+  var input = root.querySelector('.explore-input');
+  input.addEventListener('input', function(){ st.q = input.value; renderExploreResults(ck); });
+  root.querySelectorAll('.chip').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var v = btn.getAttribute('data-vibe'), i = st.vibes.indexOf(v);
+      if (i >= 0){ st.vibes.splice(i, 1); btn.classList.remove('is-on'); }
+      else { st.vibes.push(v); btn.classList.add('is-on'); }
+      renderExploreResults(ck);
+    });
+  });
+  root.querySelector('.explore-shuffle').addEventListener('click', function(){
+    st.q = ''; st.vibes = []; st.seed = Math.random();
+    input.value = '';
+    root.querySelectorAll('.chip.is-on').forEach(function(b){ b.classList.remove('is-on'); });
+    renderExploreResults(ck);
+  });
+  renderExploreResults(ck);
 }
 
 function renderCityExtras(ck) {
@@ -1254,7 +1406,9 @@ function renderCityExtras(ck) {
     ? items.map(bookingCardHTML).join('')
     : '<p class="city-bookings-empty">Nothing booked here yet. Add it on the Plan &amp; Bookings tab.</p>';
   el.innerHTML = conciergeHTML(ck) +
+    exploreHTML(ck) +
     '<div class="booking-group"><h4>Your bookings — ' + esc(CITY_NAMES[ck]) + '</h4>' + bookingsHTML + '</div>';
+  bindExplore(ck);
 }
 
 function renderAllCityExtras() {
