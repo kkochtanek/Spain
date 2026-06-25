@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>Kochtanek Spain Trip — Summer 2026</title>
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
@@ -322,6 +325,16 @@
     letter-spacing: .03em;
     opacity: .6;
   }
+  #update-banner {
+    position: fixed; left: 50%; transform: translateX(-50%); bottom: 16px; z-index: 9999;
+    background: #185fa5; color: #fff; padding: 10px 16px; border-radius: 24px;
+    font-size: 13px; box-shadow: 0 4px 16px rgba(0,0,0,.25);
+    display: flex; align-items: center; gap: 10px; max-width: 92vw;
+  }
+  #update-banner button {
+    background: #fff; color: #185fa5; border: none; border-radius: 16px;
+    padding: 5px 13px; font-weight: 700; cursor: pointer; font-family: inherit; font-size: 13px;
+  }
   #schedule-check:empty { display: none; }
   .sched {
     border-radius: 12px;
@@ -394,6 +407,12 @@
     margin-bottom: 0.65rem;
   }
   .overview-bar span { display: block; }
+  .ov-compact { cursor: pointer; }
+  .ov-compact .overview-bar { margin-bottom: 7px; }
+  .ov-compact-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .ov-compact-text { font-size: 11.5px; color: var(--hint); font-weight: 300; letter-spacing: .02em; }
+  .ov-expand { font-size: 11px; color: #185fa5; white-space: nowrap; }
+  .ov-collapse { text-align: right; margin-top: 8px; }
   .seg-bcn { background: var(--bcn); }
   .seg-mrb { background: var(--mrb); }
   .seg-sev { background: var(--sev); }
@@ -568,16 +587,23 @@
   .chat-suggests { display:flex; flex-wrap:wrap; gap:7px; margin-bottom:12px; }
   .chat-suggest { text-align:left; padding:8px 12px; border:1px solid rgba(24,95,165,.22); border-radius:12px; background:#fff; font-size:13px; font-family:inherit; color:#185fa5; cursor:pointer; }
   .chat-suggest:hover { background:rgba(24,95,165,.07); }
-  .chat-thread { display:flex; flex-direction:column; gap:10px; max-height:52vh; overflow-y:auto; padding:4px 2px; margin-bottom:12px; }
-  .chat-msg { max-width:85%; padding:10px 14px; border-radius:14px; font-size:14px; line-height:1.55; }
+  .chat-thread { position:relative; display:flex; flex-direction:column; gap:10px; max-height:52vh; overflow-y:auto; padding:4px 2px; margin-bottom:12px; -webkit-overflow-scrolling:touch; }
+  .chat-msg { max-width:85%; padding:10px 14px; border-radius:14px; font-size:15px; line-height:1.55; }
   .chat-user { align-self:flex-end; background:#185fa5; color:#fff; border-bottom-right-radius:4px; }
   .chat-bot { align-self:flex-start; background:var(--paper); border:1px solid rgba(0,0,0,.08); color:var(--ink); border-bottom-left-radius:4px; }
   .chat-bot a { color:#185fa5; text-decoration:underline; overflow-wrap:anywhere; font-weight:600; }
   .chat-user a { color:#fff; text-decoration:underline; overflow-wrap:anywhere; }
   .chat-typing { color:var(--muted); letter-spacing:2px; }
-  .chat-input-row { display:flex; gap:8px; }
-  #chat-input { flex:1; padding:11px 14px; border:1px solid rgba(24,95,165,.25); border-radius:12px; font-size:14px; font-family:inherit; color:var(--ink); }
+  .chat-tools { display:flex; justify-content:flex-end; margin-bottom:10px; }
+  .chat-toggle { background:none; border:1px solid var(--border-strong); border-radius:16px; padding:5px 12px; font-size:12px; font-family:inherit; color:var(--muted); cursor:pointer; }
+  .chat-toggle.on { background:#eef4fb; border-color:#185fa5; color:#185fa5; }
+  .chat-input-row { display:flex; gap:8px; align-items:stretch; }
+  #chat-input { flex:1; min-width:0; padding:12px 14px; border:1px solid rgba(24,95,165,.25); border-radius:12px; font-size:16px; font-family:inherit; color:var(--ink); }
   #chat-input:focus { outline:none; border-color:#185fa5; box-shadow:0 0 0 3px rgba(24,95,165,.12); }
+  .chat-icon { flex:0 0 auto; width:46px; border:1px solid rgba(24,95,165,.25); border-radius:12px; background:#fff; font-size:19px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+  .chat-icon.listening { background:#fdecec; border-color:#d9534f; animation:micpulse 1s infinite; }
+  @keyframes micpulse { 0%,100%{ box-shadow:0 0 0 0 rgba(217,83,79,.45);} 50%{ box-shadow:0 0 0 7px rgba(217,83,79,0);} }
+  .chat-input-row .btn { flex:0 0 auto; }
   .city-bookings-empty { font-size:14px; color:var(--hint); font-weight:300; font-style:italic; padding: 2px 0 4px; }
 
   @media (max-width: 520px) {
@@ -587,6 +613,9 @@
     .overview .sub { font-size: 11px; }
     .ov-dates { display: none; }
     .booking-form { grid-template-columns: 1fr; }
+    .chat-thread { max-height: 60vh; }
+    .chat-msg { max-width: 90%; }
+    .nav-btn { font-size: 13px; padding: 8px 12px; }
   }
 </style>
 </head>
@@ -792,7 +821,7 @@
   <div class="footer">
     Confirmation SKHETT · Kyle, Alyssa, Olivia, Leo & Kennedy Kochtanek<br>
     Tap any city above, then tap a day to expand it.<br>
-    <span class="build-stamp">Last published: 24 Jun 2026 · 10:41 PM CDT</span>
+    <span class="build-stamp">Last published: 24 Jun 2026 · 10:51 PM CDT</span>
   </div>
 
 </div>
@@ -948,6 +977,7 @@ var DEFAULT_OUTLINE = [
 var outline = DEFAULT_OUTLINE.map(function(c){ return Object.assign({}, c); });
 var outlineSaved = DEFAULT_OUTLINE.map(function(c){ return Object.assign({}, c); });
 var outlineEditing = false;
+var overviewCollapsed = true;   // 'at a glance' starts compact (just the bar + one-line summary)
 
 function cloneOutline(a){ return a.map(function(x){ return Object.assign({}, x); }); }
 function addDays(d, n){ var x = new Date(d.getTime()); x.setDate(x.getDate() + n); return x; }
@@ -1010,14 +1040,26 @@ function renderOverview() {
     }).join('');
     controls = '<button class="ov-edit-btn" data-act="edit">Edit</button>';
   }
+  var summary = (totalNights + 1) + ' days · ' + totalNights + ' nights · ' +
+    outline.length + ' ' + (outline.length === 1 ? 'place' : 'places') + ' · ' +
+    rangeLabel(TRIP_START, endDate);
+  if (!outlineEditing && overviewCollapsed) {
+    document.getElementById('overview').innerHTML =
+      '<div class="ov-compact" data-act="toggle" title="Show trip at a glance">' +
+        '<div class="overview-bar">' + bar + '</div>' +
+        '<div class="ov-compact-row"><span class="ov-compact-text">Trip at a glance · ' + summary + '</span>' +
+        '<span class="ov-expand">Details ▾</span></div>' +
+      '</div>';
+    renderCityHeaders();
+    return;
+  }
   document.getElementById('overview').innerHTML =
     '<div class="ov-head"><h3>Trip at a glance</h3>' + controls + '</div>' +
-    '<div class="sub">' + (totalNights + 1) + ' days · ' + totalNights + ' nights · ' +
-      outline.length + ' ' + (outline.length === 1 ? 'place' : 'places') + ' · ' +
-      rangeLabel(TRIP_START, endDate) + '</div>' +
+    '<div class="sub">' + summary + '</div>' +
     '<div class="overview-bar">' + bar + '</div>' +
     '<ul class="overview-list">' + body + '</ul>' +
-    (outlineEditing ? '<div class="ov-note">Editing updates this summary and each place’s date banner. The detailed day-by-day plans are curated — after you change the outline, tell Claude “rebuild the day plans” and the daily details get redone to match.</div>' : '');
+    (outlineEditing ? '<div class="ov-note">Editing updates this summary and each place’s date banner. The detailed day-by-day plans are curated — after you change the outline, tell Claude “rebuild the day plans” and the daily details get redone to match.</div>'
+                    : '<div class="ov-collapse"><button type="button" class="ov-edit-btn" data-act="toggle">▴ Hide details</button></div>');
   renderCityHeaders();
 }
 
@@ -1075,6 +1117,7 @@ document.getElementById('overview').addEventListener('click', function(e) {
   if (actEl) {
     var a = actEl.getAttribute('data-act');
     var i = parseInt(actEl.getAttribute('data-i'), 10);
+    if (a === 'toggle') { overviewCollapsed = !overviewCollapsed; renderOverview(); return; }
     if (a === 'edit') { outlineSaved = cloneOutline(outline); outlineEditing = true; renderOverview(); return; }
     if (a === 'cancel') { outline = cloneOutline(outlineSaved); outlineEditing = false; renderOverview(); return; }
     if (a === 'save') {
@@ -1725,6 +1768,54 @@ renderSummary();
    Claude API key. The full itinerary + bookings are sent as context. */
 var conciergeMsgs = [];
 var conciergeBusy = false;
+var conciergeScroll = 'bottom';        // 'bottom' on send, 'answerTop' when a reply lands
+var conciergeRec = null, conciergeListening = false;
+var conciergeSpeak = false;
+try { conciergeSpeak = localStorage.getItem('spain_concierge_speak') === '1'; } catch(_){}
+
+function updateMicUI(){
+  var m = document.getElementById('cc-mic');
+  if (m) m.classList.toggle('listening', conciergeListening);
+}
+
+// Voice input via the Web Speech API (Chrome / Android / desktop). iOS Safari
+// doesn't support it — there, the keyboard's own mic does the dictation.
+function conciergeStartVoice(){
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) return;
+  if (conciergeListening && conciergeRec){ try { conciergeRec.stop(); } catch(_){} return; }
+  try { conciergeRec = new SR(); } catch(_){ return; }
+  conciergeRec.lang = 'en-US';
+  conciergeRec.interimResults = true;
+  conciergeRec.continuous = false;
+  conciergeRec.onstart = function(){ conciergeListening = true; updateMicUI(); };
+  conciergeRec.onend = function(){ conciergeListening = false; updateMicUI(); };
+  conciergeRec.onerror = function(){ conciergeListening = false; updateMicUI(); };
+  conciergeRec.onresult = function(e){
+    var txt = '';
+    for (var i = 0; i < e.results.length; i++){ txt += e.results[i][0].transcript; }
+    var inp = document.getElementById('chat-input'); if (inp) inp.value = txt;
+    if (e.results[e.results.length - 1].isFinal){
+      conciergeListening = false;
+      var t = txt.trim();
+      if (t) conciergeAsk(t);
+    }
+  };
+  try { conciergeRec.start(); } catch(_){}
+}
+
+// Read a reply aloud (works on iOS too). Strips links/markup first.
+function conciergeSpeakText(text){
+  if (!conciergeSpeak || !('speechSynthesis' in window)) return;
+  var clean = String(text)
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/https?:\/\/\S+/g, '')
+    .replace(/[★*_#`📍]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+  if (!clean) return;
+  try { window.speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(clean); u.lang = 'en-US'; window.speechSynthesis.speak(u); } catch(_){}
+}
 
 function getAppPassword(){ try { return sessionStorage.getItem('spain_pw_v1') || ''; } catch(e){ return ''; } }
 function conciergeEndpoint(){ if (CONCIERGE_ENDPOINT) return CONCIERGE_ENDPOINT; try { return localStorage.getItem('spain_concierge_url') || ''; } catch(e){ return ''; } }
@@ -1811,18 +1902,44 @@ function renderConcierge(){
   var chips = conciergeMsgs.length ? '' : '<div class="chat-suggests">' + suggestions.map(function(s){ return '<button type="button" class="chat-suggest">' + esc(s) + '</button>'; }).join('') + '</div>';
   var thread = conciergeMsgs.map(function(m){ return conciergeBubble(m.role, m.content); }).join('') +
     (conciergeBusy ? '<div class="chat-msg chat-bot chat-typing">&hellip;</div>' : '');
+  var ttsSupported = ('speechSynthesis' in window);
+  var toolsRow = ttsSupported ? '<div class="chat-tools"><button type="button" class="chat-toggle' + (conciergeSpeak ? ' on' : '') + '" id="cc-speak">&#128266; Read answers aloud: ' + (conciergeSpeak ? 'On' : 'Off') + '</button></div>' : '';
+  var voiceSupported = !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+  var micBtn = voiceSupported ? '<button type="button" class="chat-icon' + (conciergeListening ? ' listening' : '') + '" id="cc-mic" aria-label="Speak" title="Tap and speak">&#127908;</button>' : '';
   el.innerHTML =
     '<div class="chat-intro">Ask me anything about the trip &mdash; &ldquo;lunch near our Airbnb with good wine&rdquo;, &ldquo;what to do on a rainy afternoon in Madrid&rdquo;, &ldquo;is the Sevilla day too packed?&rdquo;. I know your itinerary and bookings.</div>' +
+    toolsRow +
     chips +
     '<div class="chat-thread" id="chat-thread">' + thread + '</div>' +
     '<form class="chat-input-row" id="chat-form">' +
       '<input type="text" id="chat-input" placeholder="Ask the concierge&hellip;" autocomplete="off"' + (conciergeBusy ? ' disabled' : '') + '>' +
+      micBtn +
       '<button class="btn" type="submit"' + (conciergeBusy ? ' disabled' : '') + '>Send</button>' +
     '</form>' +
     (CONCIERGE_ENDPOINT ? '' : '<div class="chat-foot"><button type="button" class="chat-reset" id="cc-reset">Change Worker URL</button></div>');
-  var thr = document.getElementById('chat-thread'); if (thr) thr.scrollTop = thr.scrollHeight;
+  var thr = document.getElementById('chat-thread');
+  if (thr){
+    if (conciergeScroll === 'answerTop'){
+      var qs = thr.querySelectorAll('.chat-user');
+      var lastQ = qs[qs.length - 1];
+      thr.scrollTop = lastQ ? lastQ.offsetTop : thr.scrollHeight;
+    } else {
+      thr.scrollTop = thr.scrollHeight;
+    }
+  }
   document.getElementById('chat-form').addEventListener('submit', function(e){ e.preventDefault(); conciergeAsk(document.getElementById('chat-input').value); });
   Array.prototype.forEach.call(el.querySelectorAll('.chat-suggest'), function(b){ b.addEventListener('click', function(){ conciergeAsk(b.textContent); }); });
+  var mic = document.getElementById('cc-mic');
+  if (mic) mic.addEventListener('click', conciergeStartVoice);
+  var spk = document.getElementById('cc-speak');
+  if (spk) spk.addEventListener('click', function(){
+    conciergeSpeak = !conciergeSpeak;
+    try { localStorage.setItem('spain_concierge_speak', conciergeSpeak ? '1' : '0'); } catch(_){}
+    spk.textContent = '🔊 Read answers aloud: ' + (conciergeSpeak ? 'On' : 'Off');
+    spk.classList.toggle('on', conciergeSpeak);
+    if (conciergeSpeak) { conciergeSpeakText('Okay, I will read answers aloud.'); }
+    else if ('speechSynthesis' in window) { window.speechSynthesis.cancel(); }
+  });
   var rst = document.getElementById('cc-reset'); if (rst) rst.addEventListener('click', function(){ try { localStorage.removeItem('spain_concierge_url'); } catch(_){} conciergeMsgs = []; renderConcierge(); });
   if (!conciergeBusy){ var ci = document.getElementById('chat-input'); var sec = document.getElementById('city-ask'); if (ci && sec && sec.classList.contains('visible')) ci.focus(); }
 }
@@ -1832,6 +1949,7 @@ function conciergeAsk(text){
   if (!text || conciergeBusy) return;
   conciergeMsgs.push({ role:'user', content:text });
   conciergeBusy = true;
+  conciergeScroll = 'bottom';
   renderConcierge();
   fetch(conciergeEndpoint(), {
     method:'POST',
@@ -1840,11 +1958,12 @@ function conciergeAsk(text){
   }).then(function(r){ return r.json().then(function(d){ return { ok:r.ok, d:d }; }); })
     .then(function(res){
       conciergeBusy = false;
-      if (res.ok && res.d && res.d.text){ conciergeMsgs.push({ role:'assistant', content:res.d.text }); }
+      conciergeScroll = 'answerTop';
+      if (res.ok && res.d && res.d.text){ conciergeMsgs.push({ role:'assistant', content:res.d.text }); conciergeSpeakText(res.d.text); }
       else { conciergeMsgs.push({ role:'assistant', content:'⚠️ ' + ((res.d && res.d.error) || 'Something went wrong. Check the concierge setup in SETUP.md.') }); }
       renderConcierge();
     })
-    .catch(function(){ conciergeBusy = false; conciergeMsgs.push({ role:'assistant', content:'⚠️ Could not reach the concierge service. Check your connection and the Worker URL.' }); renderConcierge(); });
+    .catch(function(){ conciergeBusy = false; conciergeScroll = 'answerTop'; conciergeMsgs.push({ role:'assistant', content:'⚠️ Could not reach the concierge service. Check your connection and the Worker URL.' }); renderConcierge(); });
 }
 
 renderConcierge();
@@ -1960,6 +2079,32 @@ document.getElementById('gate-form').addEventListener('submit', async function(e
     input.focus();
   }
 });
+</script>
+<script>
+/* Auto update-check: on load, fetch the live page (bypassing cache) and compare
+   its published timestamp to this one. If a newer version is live, offer a
+   one-tap refresh — fixes phones/bookmarks showing a stale cached copy. */
+(function(){
+  function stampNow(){ var el = document.querySelector('.build-stamp'); return el ? el.textContent.replace(/^Last published:\s*/, '').trim() : ''; }
+  var cur = stampNow();
+  if (!cur) return;
+  fetch(location.pathname + '?_=' + Date.now(), { cache: 'no-store' })
+    .then(function(r){ return r.text(); })
+    .then(function(html){
+      var m = html.match(/Last published:\s*([^<]*)</);
+      var live = m ? m[1].trim() : '';
+      if (live && live !== cur) {
+        var b = document.createElement('div');
+        b.id = 'update-banner';
+        b.innerHTML = '🔄 A newer version is available. <button id="ub-refresh">Refresh</button>';
+        document.body.appendChild(b);
+        document.getElementById('ub-refresh').addEventListener('click', function(){
+          location.href = location.pathname + '?v=' + Date.now();
+        });
+      }
+    })
+    .catch(function(){});
+})();
 </script>
 </body>
 </html>
