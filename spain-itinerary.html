@@ -792,7 +792,7 @@
   <div class="footer">
     Confirmation SKHETT · Kyle, Alyssa, Olivia, Leo & Kennedy Kochtanek<br>
     Tap any city above, then tap a day to expand it.<br>
-    <span class="build-stamp">Last published: 24 Jun 2026 · 10:10 PM CDT</span>
+    <span class="build-stamp">Last published: 24 Jun 2026 · 10:38 PM CDT</span>
   </div>
 
 </div>
@@ -1111,10 +1111,11 @@ document.addEventListener('click', function(e) {
    Until then everything still works and saves on this device only.
    Setup steps are in SETUP.md.
    ===================================================================== */
-/* AI Concierge: paste your deployed Cloudflare Worker URL here to switch the
-   Concierge chat on (one-time setup in SETUP.md → "AI Concierge"). The Worker
-   holds the Claude API key so it never appears in this page. Leave "" for off. */
-var CONCIERGE_ENDPOINT = "";
+/* AI Concierge: the deployed Cloudflare Worker URL. Baked in here so the chat
+   works on every device with no per-device setup. The Worker holds the Claude
+   API key (it never appears in this page); the family password + spend cap are
+   what protect it. Set to "" to turn the Concierge off. */
+var CONCIERGE_ENDPOINT = "https://spain-concierge.kkochtanek.workers.dev";
 
 var FIREBASE_CONFIG = {
   apiKey: "",
