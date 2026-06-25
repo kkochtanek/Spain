@@ -821,7 +821,7 @@
   <div class="footer">
     Confirmation SKHETT · Kyle, Alyssa, Olivia, Leo & Kennedy Kochtanek<br>
     Tap any city above, then tap a day to expand it.<br>
-    <span class="build-stamp">Last published: 24 Jun 2026 · 10:51 PM CDT</span>
+    <span class="build-stamp">Last published: 25 Jun 2026 · 7:52 AM CDT</span>
   </div>
 
 </div>
@@ -1300,7 +1300,15 @@ var CONFIRMED_BOOKINGS = [
     notes:'AA 2720 STL→PHL, then AA 742 PHL→BCN. Departs 11:20am Jul 14, arrives Barcelona 6:45am Jul 15 (overnight flight).' },
   { id:'c-flight-home', source:'confirmed', status:'booked', type:'flight', city:'mad', addedBy:'Kyle',
     title:'MAD → ORD → STL (return)', date:'Jul 28', time:'Dep 1:35pm', cost:'', confirmation:'SKHETT',
-    notes:"AA 125 MAD→Chicago O'Hare (arrive 4pm), then AA 439 ORD→STL (dep 7:04pm, arrive 8:26pm). Home by bedtime." }
+    notes:"AA 125 MAD→Chicago O'Hare (arrive 4pm), then AA 439 ORD→STL (dep 7:04pm, arrive 8:26pm). Home by bedtime." },
+  { id:'c-train-sev-mad', source:'confirmed', status:'booked', type:'transport', city:'sev', addedBy:'Alyssa',
+    title:'AVE train Sevilla → Madrid', date:'Jul 25', time:'11:32am–2:11pm', cost:'€97.25', confirmation:'CXYPU5',
+    link:'https://drive.google.com/file/d/1_IbeuAe62Cpw2WK-fO4Fun7Mno76oirn/view',
+    notes:'Renfe AVE 02111, Estándar, coach 6, seats 9A–9D & 10D (all 5). Sevilla Santa Justa → Madrid Puerta de Atocha. Locator CXYPU5. Sevilla check-out is 11 AM the same morning — tight, leave promptly.' },
+  { id:'c-flamenco-mad', source:'confirmed', status:'booked', type:'activity', city:'mad', addedBy:'Alyssa',
+    title:'Flamenco — “Emociones” (Teatro Flamenco Madrid)', date:'Jul 24', time:'7:00pm', cost:'€275', confirmation:'26-041048',
+    link:'https://drive.google.com/file/d/1DAafguAaqmaf6blVVSWlm5d53TUYRzO-/view',
+    notes:'5 Premium tickets · Teatro Flamenco Madrid, Calle Pez 10, 28004 Madrid · ~1 hr, unnumbered seats, arrive 30 min early. ⚠️ Ticket is for MADRID on Jul 24, but the plan has you in Sevilla until Jul 25 — likely the wrong city/date (a Sevilla flamenco was planned). Please verify.' }
 ];
 
 // Everything to display = confirmed (baked in) + live entries from the store.
@@ -1531,6 +1539,21 @@ function scheduleConflicts(all) {
       issues.push({ level: 'warn', msg: 'No lodging booked for ' + scFmtRange(lastEnd, tripEnd - 1) + ' — after ' + lodging[lodging.length - 1].b.title + ' check-out (' + scFmtDay(lastEnd) + '), before the trip ends (' + scFmtDay(tripEnd) + ').' });
     }
   }
+
+  // 3) A place-specific booking (activity/dining) in a different city than where
+  //    you're sleeping that night — catches wrong-city tickets.
+  var moveTypes = { lodging:1, flight:1, transport:1 };
+  booked.forEach(function(b){
+    if (moveTypes[b.type] || !b.city || b.city === 'general') return;
+    var dr = scParseDates(b.date); if (!dr) return;
+    var day = dr.start;
+    var lodge = lodging.filter(function(l){ return l.start <= day && day < l.end; })[0];
+    if (lodge && lodge.b.city && lodge.b.city !== b.city) {
+      var here = (typeof CITY_NAMES !== 'undefined' && CITY_NAMES[b.city]) || b.city;
+      var there = (typeof CITY_NAMES !== 'undefined' && CITY_NAMES[lodge.b.city]) || lodge.b.city;
+      issues.push({ level: 'conflict', msg: '"' + b.title + '" is in ' + here + ' on ' + scFmtDay(day) + ', but you\'re staying in ' + there + ' that night (' + lodge.b.title + ').' });
+    }
+  });
 
   return issues;
 }
