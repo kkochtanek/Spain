@@ -322,6 +322,22 @@
     letter-spacing: .03em;
     opacity: .6;
   }
+  #schedule-check:empty { display: none; }
+  .sched {
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    font-size: 14px;
+    line-height: 1.5;
+    border: 1px solid;
+  }
+  .sched.ok { background: #eef6ee; border-color: #cfe6cf; color: #2f6b39; }
+  .sched:not(.ok) { background: #fdf4e7; border-color: #f0d9b3; color: #6b4e1f; }
+  .sched h4 { margin: 0 0 8px; font-size: 14px; font-weight: 700; }
+  .sched ul { margin: 0; padding-left: 2px; list-style: none; }
+  .sched li { padding: 4px 0; }
+  .sched .sc-conflict { color: #9a2a2a; font-weight: 600; }
+  .sched .sc-warn { color: #6b4e1f; }
 
   .checklist {
     background: var(--paper);
@@ -706,6 +722,7 @@
       </div>
     </div>
     <div class="sync-banner" id="sync-banner"></div>
+    <div id="schedule-check"></div>
     <p class="city-intro">Log every confirmed booking here — flights, lodging, trains, the rental car, tickets and dinner reservations. Anything you add saves automatically and, once Firebase is connected, syncs live between you and Alyssa. Each city tab also shows my concierge picks while you finalise plans.</p>
     <form class="booking-form" id="booking-form" autocomplete="off">
       <h4 id="form-title">Add a booking</h4>
@@ -775,7 +792,7 @@
   <div class="footer">
     Confirmation SKHETT · Kyle, Alyssa, Olivia, Leo & Kennedy Kochtanek<br>
     Tap any city above, then tap a day to expand it.<br>
-    <span class="build-stamp">Last published: 25 Jun 2026 · 2:56 AM UTC</span>
+    <span class="build-stamp">Last published: 24 Jun 2026 · 10:10 PM CDT</span>
   </div>
 
 </div>
@@ -1369,8 +1386,134 @@ function bookingCardHTML(b) {
     '</div>';
 }
 
+/* ---- Schedule watchdog: flag conflicting / time-dependent bookings ---- */
+var SC_MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+function scMonthIdx(name) {
+  var n = String(name).slice(0, 3).toLowerCase();
+  for (var i = 0; i < SC_MONTHS.length; i++) { if (SC_MONTHS[i].toLowerCase() === n) return i; }
+  return -1;
+}
+
+// Turn "Jul 15" / "Jul 15–17" into ordinals (month*100+day). Returns {start,end} or null.
+function scParseDates(str) {
+  if (!str) return null;
+  var monthRe = /([A-Za-z]{3,})\.?\s+(\d{1,2})/;
+  var parts = String(str).replace(/[–—]/g, '-').split('-');
+  var left = (parts[0] || '').match(monthRe);
+  if (!left) return null;
+  var mL = scMonthIdx(left[1]);
+  if (mL < 0) return null;
+  var startOrd = (mL + 1) * 100 + parseInt(left[2], 10);
+  var endOrd = startOrd;
+  if (parts[1]) {
+    var rM = parts[1].match(monthRe);
+    if (rM && scMonthIdx(rM[1]) >= 0) {
+      endOrd = (scMonthIdx(rM[1]) + 1) * 100 + parseInt(rM[2], 10);
+    } else {
+      var dOnly = parts[1].match(/\d{1,2}/);
+      if (dOnly) endOrd = (mL + 1) * 100 + parseInt(dOnly[0], 10);
+    }
+  }
+  return { start: startOrd, end: endOrd };
+}
+
+// Pull a clock time out of a string -> minutes since midnight, or null.
+function scParseTime(str) {
+  if (!str) return null;
+  var m = String(str).match(/(\d{1,2})(?::(\d{2}))?\s*([ap])\.?m\.?/i);
+  if (!m) return null;
+  var h = parseInt(m[1], 10) % 12;
+  if (/p/i.test(m[3])) h += 12;
+  return h * 60 + (m[2] ? parseInt(m[2], 10) : 0);
+}
+
+function scMD(ord) { return { m: Math.floor(ord / 100), d: ord % 100 }; }
+function scFmtDay(ord) { var x = scMD(ord); return SC_MONTHS[x.m - 1] + ' ' + x.d; }
+function scFmtRange(a, b) {
+  if (a === b) return scFmtDay(a);
+  var xa = scMD(a), xb = scMD(b);
+  return xa.m === xb.m ? SC_MONTHS[xa.m - 1] + ' ' + xa.d + '–' + xb.d : scFmtDay(a) + '–' + scFmtDay(b);
+}
+function scFmtClock(mins) {
+  var h = Math.floor(mins / 60), m = mins % 60, ap = h >= 12 ? 'PM' : 'AM';
+  var h12 = h % 12; if (h12 === 0) h12 = 12;
+  return h12 + ':' + (m < 10 ? '0' + m : m) + ' ' + ap;
+}
+
+// Returns [{level:'conflict'|'warn', msg}]
+function scheduleConflicts(all) {
+  var issues = [];
+  var booked = all.filter(function(b){ return (b.status || 'booked') === 'booked'; });
+
+  // 1) Same-day clashes between bookings that have a specific clock time.
+  var timed = [];
+  booked.forEach(function(b){
+    var dr = scParseDates(b.date), t = scParseTime(b.time);
+    if (dr && t !== null) timed.push({ b: b, day: dr.start, t: t });
+  });
+  timed.sort(function(a, c){ return a.day - c.day || a.t - c.t; });
+  for (var i = 0; i < timed.length; i++) {
+    for (var j = i + 1; j < timed.length; j++) {
+      if (timed[j].day !== timed[i].day) break;
+      var gap = Math.abs(timed[j].t - timed[i].t);
+      if (gap === 0) {
+        issues.push({ level: 'conflict', msg: 'Two bookings are both at ' + scFmtClock(timed[i].t) + ' on ' + scFmtDay(timed[i].day) + ': "' + timed[i].b.title + '" and "' + timed[j].b.title + '".' });
+      } else if (gap < 90) {
+        issues.push({ level: 'warn', msg: 'Tight on ' + scFmtDay(timed[i].day) + ': "' + timed[i].b.title + '" (' + scFmtClock(timed[i].t) + ') and "' + timed[j].b.title + '" (' + scFmtClock(timed[j].t) + ') are only ' + gap + ' min apart.' });
+      }
+    }
+  }
+
+  // 2) Lodging continuity: overlaps and gaps between consecutive stays.
+  var lodging = booked.filter(function(b){ return b.type === 'lodging'; })
+    .map(function(b){ var dr = scParseDates(b.date); return dr ? { b: b, start: dr.start, end: dr.end } : null; })
+    .filter(Boolean)
+    .sort(function(a, c){ return a.start - c.start; });
+  for (var k = 0; k < lodging.length - 1; k++) {
+    var cur = lodging[k], nxt = lodging[k + 1];
+    if (cur.end > nxt.start) {
+      issues.push({ level: 'conflict', msg: 'Overlapping stays: "' + cur.b.title + '" runs to ' + scFmtDay(cur.end) + ' but "' + nxt.b.title + '" starts ' + scFmtDay(nxt.start) + ' — you\'re booked in two places at once.' });
+    } else if (cur.end < nxt.start) {
+      issues.push({ level: 'warn', msg: 'No lodging booked for ' + scFmtRange(cur.end, nxt.start - 1) + ' — between ' + cur.b.title + ' check-out (' + scFmtDay(cur.end) + ') and ' + nxt.b.title + ' check-in (' + scFmtDay(nxt.start) + ').' });
+    }
+  }
+  // Tail gap: last stay's check-out to the trip's end (latest booked date).
+  if (lodging.length) {
+    var lastEnd = lodging[lodging.length - 1].end;
+    var tripEnd = 0;
+    booked.forEach(function(b){ var dr = scParseDates(b.date); if (dr && dr.end > tripEnd) tripEnd = dr.end; });
+    if (tripEnd > lastEnd) {
+      issues.push({ level: 'warn', msg: 'No lodging booked for ' + scFmtRange(lastEnd, tripEnd - 1) + ' — after ' + lodging[lodging.length - 1].b.title + ' check-out (' + scFmtDay(lastEnd) + '), before the trip ends (' + scFmtDay(tripEnd) + ').' });
+    }
+  }
+
+  return issues;
+}
+
+function renderScheduleCheck() {
+  var el = document.getElementById('schedule-check');
+  if (!el) return;
+  var issues = scheduleConflicts(allBookings());
+  if (!issues.length) {
+    el.innerHTML = '<div class="sched ok"><strong>✓ Schedule check</strong> — no booking conflicts found.</div>';
+    return;
+  }
+  var nC = issues.filter(function(i){ return i.level === 'conflict'; }).length;
+  var nW = issues.length - nC;
+  var rows = issues.map(function(i){
+    return '<li class="' + (i.level === 'conflict' ? 'sc-conflict' : 'sc-warn') + '">' +
+      (i.level === 'conflict' ? '❗ ' : '⚠️ ') + esc(i.msg) + '</li>';
+  }).join('');
+  var head = [];
+  if (nC) head.push(nC + ' conflict' + (nC === 1 ? '' : 's'));
+  if (nW) head.push(nW + ' heads-up' + (nW === 1 ? '' : 's'));
+  el.innerHTML = '<div class="sched"><h4>Schedule check — ' + head.join(', ') + '</h4><ul>' + rows + '</ul></div>';
+}
+
 function renderBookings() {
   var el = document.getElementById('bookings-list');
+  renderScheduleCheck();
   if (!el) return;
   var all = allBookings();
   if (!all.length) {
