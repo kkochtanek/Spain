@@ -1,15 +1,16 @@
 {
-  "_comment": "Google Drive file IDs already turned into bookings. The daily auto-check reads this so the same confirmation is never logged twice. 'ignore' lists files in the folder that are NOT bookings (e.g. the READ ME).",
+  "_comment": "Google Drive file IDs already turned into bookings. The daily auto-check reads this so the same confirmation is never logged twice. 'ignore' lists files in the folder that are NOT bookings (e.g. the READ ME and the auto-generated summary).",
   "folderId": "1XIbsGonqKziJfbSFFLbQ9i0cF5h6x6wd",
   "ignore": [
-    "1RqijY1tNEhREKdMqa6pVAWt5T8WCMNJ44iDluSGzos8"
+    "1RqijY1tNEhREKdMqa6pVAWt5T8WCMNJ44iDluSGzos8",
+    "1uSz_oSUFcLP5xW-wyPBU4iBtyCBHLl2sHtKbtLx-UPc"
   ],
   "processed": [
-    {
-      "fileId": "1v0rmEx4q9iSoJq5Th3w-yuH9X4HsxXBv",
-      "title": "Airbnb receipt — Barcelona Jul 15–17",
-      "bookingId": "c-airbnb-bcn",
-      "pendingDetails": "Address, host, total, and confirmation code not yet read — Drive read-content permission was not approved. Re-read and enrich c-airbnb-bcn once permission is granted."
-    }
+    { "fileId": "1v0rmEx4q9iSoJq5Th3w-yuH9X4HsxXBv", "title": "Barcelona Airbnb (.eml)", "bookingId": "c-airbnb-bcn" },
+    { "fileId": "1AFw1HEV2wm66-w0ZJXZrziU4467LVn2P", "title": "Barcelona Airbnb (.docx, image-only duplicate)", "bookingId": "c-airbnb-bcn" },
+    { "fileId": "1xfizzpWB-EALZfjWSsc-iFcDftvCeS_g", "title": "Sevilla Airbnb (.docx)", "bookingId": "c-airbnb-sev" },
+    { "fileId": "1N2XY2pLqW3kuTZQ3DxBqXA8759WF-h0C", "title": "Madrid Airbnb (.pdf)", "bookingId": "c-airbnb-mad" },
+    { "fileId": "1_IbeuAe62Cpw2WK-fO4Fun7Mno76oirn", "title": "AVE train Sevilla→Madrid (.pdf)", "bookingId": "c-train-sev-mad" },
+    { "fileId": "1DAafguAaqmaf6blVVSWlm5d53TUYRzO-", "title": "Flamenco tickets (.pdf)", "bookingId": "c-flamenco-mad", "note": "Ticket is for Teatro Flamenco MADRID on Jul 24, but family is in Sevilla then — flagged as likely wrong-city mis-booking." }
   ]
 }
