@@ -880,7 +880,7 @@ var DATA = {
       {t:'Evening', i:'walk', n:'Barceloneta neighbourhood', d:'Seafood-heavy, casual dinner with great energy. Kids welcome everywhere.'}
     ], tip:'<strong>Tip:</strong> July heat peaks 2–4pm. Plan the beach for that window, sightsee in the morning and evening.'},
     { id:'d3', date:'Jul 17', label:'Fly to Málaga · drive to Marbella', tag:'travel', acts:[
-      {t:'Morning', i:'plane_departure', n:'Fly BCN → AGP (Málaga)', d:'Vueling and Iberia fly this route frequently. ~1hr flight. Book early — July is peak. Pick up the rental car at Málaga airport.'},
+      {t:'12:55pm', i:'plane_departure', n:'Fly BCN → AGP (Málaga)', d:'Vueling VY2113, direct — Barcelona 12:55 → Málaga 14:40. All 5 booked (seats 7B–7F), checked bags included. Then pick up the Enterprise rental car (Volvo XC90, conf 397232796) at Málaga airport, 3:00 PM.'},
       {t:'Afternoon', i:'car', n:'Drive to Marbella', d:'~45 min along the AP-7 coastal highway, Mediterranean on your left. Stop at a roadside chiringuito for lunch if hungry.'},
       {t:'Afternoon', i:'estate', n:'Check in & orient', d:'Drop bags, find the beach, grocery run if you\'re in a villa. Marbella\'s old town is worth an evening stroll — whitewashed lanes and the Plaza de los Naranjos.'}
     ]}
@@ -1312,7 +1312,15 @@ var CONFIRMED_BOOKINGS = [
   { id:'c-flamenco-mad', source:'confirmed', status:'booked', type:'activity', city:'mad', addedBy:'Alyssa',
     title:'Flamenco — “Emociones” (Teatro Flamenco Madrid)', date:'Jul 24', time:'7:00pm', cost:'€275', confirmation:'26-041048',
     link:'https://drive.google.com/file/d/1DAafguAaqmaf6blVVSWlm5d53TUYRzO-/view',
-    notes:'5 Premium tickets · Teatro Flamenco Madrid, Calle Pez 10, 28004 Madrid · ~1 hr, unnumbered seats, arrive 30 min early. ⚠️ Ticket is for MADRID on Jul 24, but the plan has you in Sevilla until Jul 25 — likely the wrong city/date (a Sevilla flamenco was planned). Please verify.' }
+    notes:'5 Premium tickets · Teatro Flamenco Madrid, Calle Pez 10, 28004 Madrid · ~1 hr, unnumbered seats, arrive 30 min early. ⚠️ Ticket is for MADRID on Jul 24, but the plan has you in Sevilla until Jul 25 — likely the wrong city/date (a Sevilla flamenco was planned). Please verify.' },
+  { id:'c-flight-bcn-agp', source:'confirmed', status:'booked', type:'flight', city:'bcn', addedBy:'Alyssa',
+    title:'Barcelona → Málaga (Vueling)', date:'Jul 17', time:'12:55pm–2:40pm', cost:'$628.45', confirmation:'',
+    link:'https://drive.google.com/file/d/1O70QVWULTPw2iSrFC201tze2ykC0FAM-HwwoIZbNE8s/view',
+    notes:'Vueling VY2113, direct. BCN 12:55 → Málaga (AGP) 14:40. All 5 (seats 7B–7F), each with a 25 kg checked bag. Pick up the rental car at Málaga on arrival.' },
+  { id:'c-car-rental', source:'confirmed', status:'booked', type:'transport', city:'mrb', addedBy:'Kyle',
+    title:'Rental car — Enterprise (Málaga → Sevilla)', date:'Jul 17–22', time:'Pick up 3:00pm', cost:'$487 (€428.56)', confirmation:'397232796',
+    link:'https://drive.google.com/file/d/1kTG6BUKN8njkEDvJWcE4bv4RbExLMUM5/view',
+    notes:'Luxury SUV (Volvo XC90 or similar), automatic, unlimited mileage. Pick up Málaga Costa del Sol Airport Jul 17 3:00 PM; drop at Sevilla Santa Justa train station Jul 22 2:00 PM. Driver: Kyle.' }
 ];
 
 // Everything to display = confirmed (baked in) + live entries from the store.
