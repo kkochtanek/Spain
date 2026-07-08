@@ -13,6 +13,7 @@
     { "fileId": "1_IbeuAe62Cpw2WK-fO4Fun7Mno76oirn", "title": "AVE train Sevilla→Madrid (.pdf)", "bookingId": "c-train-sev-mad" },
     { "fileId": "1DAafguAaqmaf6blVVSWlm5d53TUYRzO-", "title": "Flamenco tickets (.pdf)", "bookingId": "c-flamenco-mad", "note": "Ticket is for Teatro Flamenco MADRID on Jul 24, but family is in Sevilla then — flagged as likely wrong-city mis-booking." },
     { "fileId": "1O70QVWULTPw2iSrFC201tze2ykC0FAM-HwwoIZbNE8s", "title": "Barcelona to Malaga flight (Vueling)", "bookingId": "c-flight-bcn-agp" },
-    { "fileId": "1kTG6BUKN8njkEDvJWcE4bv4RbExLMUM5", "title": "Enterprise rental car (Málaga → Sevilla)", "bookingId": "c-car-rental" }
+    { "fileId": "1kTG6BUKN8njkEDvJWcE4bv4RbExLMUM5", "title": "Enterprise rental car (Málaga → Sevilla)", "bookingId": "c-car-rental" },
+    { "fileId": "1pzVBbSxaP9_OOHaH0nMb9FYXjZdW2Px3fQ4mI0_4b6M", "title": "Alyssa's master itinerary/planning doc (living)", "bookingId": "(planning doc)", "note": "Not a single receipt. Extracted Vueling booking code EL18TG; flagged return-flight time discrepancy (6:35 AM vs 1:35 PM) and that the intended Sevilla flamenco is Tablao El Arenal. Living doc — if edited later it won't auto-re-trigger; re-read on request." }
   ]
 }
