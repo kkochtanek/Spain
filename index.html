@@ -954,9 +954,9 @@ var DATA = {
       {t:'Evening', i:'star', n:'Celebratory final dinner', d:'Treat yourselves. Lhardy (historic, old-world setting the kids will love) or a great steakhouse — Casa Julián de Tolosa for txuleton beef.'}
     ]},
     { id:'d14', date:'Jul 28', label:'Fly home · MAD → ORD → STL', tag:'travel', acts:[
-      {t:'Morning', i:'coffee', n:'Final Spanish breakfast', d:'Tostada con tomate and café con leche. A ritual worth having one last time.'},
-      {t:'Late morning', i:'car', n:'Transfer to Madrid–Barajas (MAD)', d:'~30–40 min by taxi or Metro (Line 8 direct). Allow 3 hours before departure for international check-in. Flight is AA 125 at 1:35pm.'},
-      {t:'1:35pm', i:'plane_departure', n:'MAD → ORD → STL', d:'AA 125 to Chicago O\'Hare (arrive 4pm), then AA 439 to St. Louis (depart 7:04pm, arrive 8:26pm). Home by bedtime.'}
+      {t:'3:35am', i:'car', n:'Pre-dawn transfer to Madrid–Barajas (MAD)', d:'Very early flight — leave the apartment ~3:35 AM. Pre-book a taxi the night before (~30–40 min to the airport). Allow ~3 hours for international check-in.'},
+      {t:'6:35am', i:'plane_departure', n:'MAD → ORD → STL', d:'AA 125 to Chicago O\'Hare (arrive 3:55pm), then AA 4144 to St. Louis (depart 7:04pm, arrive 8:26pm). Home by bedtime.'},
+      {t:'On board', i:'coffee', n:'Grab breakfast at the airport / on the plane', d:'No time for a leisurely café this morning — grab tostada and café con leche at Barajas before boarding.'}
     ]}
   ]
 };
@@ -1303,8 +1303,8 @@ var CONFIRMED_BOOKINGS = [
     title:'STL → PHL → BCN (outbound)', date:'Jul 14–15', time:'Dep 11:20am', cost:'', confirmation:'SKHETT',
     notes:'AA 2720 STL→PHL, then AA 742 PHL→BCN. Departs 11:20am Jul 14, arrives Barcelona 6:45am Jul 15 (overnight flight).' },
   { id:'c-flight-home', source:'confirmed', status:'booked', type:'flight', city:'mad', addedBy:'Kyle',
-    title:'MAD → ORD → STL (return)', date:'Jul 28', time:'Dep 1:35pm', cost:'', confirmation:'SKHETT',
-    notes:"AA 125 MAD→Chicago O'Hare, then ORD→STL. ⚠️ Time conflict: Alyssa's itinerary doc lists MAD departure at 6:35 AM (leave for airport ~3:35 AM) with AA 4144 for the ORD→STL leg, while this shows 1:35 PM / AA 439. Confirm the exact departure in the American Airlines app — it changes the whole last morning." },
+    title:'MAD → ORD → STL (return)', date:'Jul 28', time:'Dep 6:35am', cost:'', confirmation:'SKHETT',
+    notes:"AA 125 MAD 6:35 AM → Chicago O'Hare 3:55 PM, then AA 4144 ORD 7:04 PM → STL 8:26 PM. ⏰ Very early start — leave the Madrid apartment ~3:35 AM (allow ~3 hrs for international check-in). Arrange a pre-booked taxi the night before." },
   { id:'c-train-sev-mad', source:'confirmed', status:'booked', type:'transport', city:'sev', addedBy:'Alyssa',
     title:'AVE train Sevilla → Madrid', date:'Jul 25', time:'11:32am–2:11pm', cost:'€97.25', confirmation:'CXYPU5',
     link:'https://drive.google.com/file/d/1_IbeuAe62Cpw2WK-fO4Fun7Mno76oirn/view',
@@ -1320,7 +1320,11 @@ var CONFIRMED_BOOKINGS = [
   { id:'c-car-rental', source:'confirmed', status:'booked', type:'transport', city:'mrb', addedBy:'Kyle',
     title:'Rental car — Enterprise (Málaga → Sevilla)', date:'Jul 17–22', time:'Pick up 3:00pm', cost:'$487 (€428.56)', confirmation:'397232796',
     link:'https://drive.google.com/file/d/1kTG6BUKN8njkEDvJWcE4bv4RbExLMUM5/view',
-    notes:'Luxury SUV (Volvo XC90 or similar), automatic, unlimited mileage. Pick up Málaga Costa del Sol Airport Jul 17 3:00 PM; drop at Sevilla Santa Justa train station Jul 22 2:00 PM. Driver: Kyle.' }
+    notes:'Luxury SUV (Volvo XC90 or similar), automatic, unlimited mileage. Pick up Málaga Costa del Sol Airport Jul 17 3:00 PM; drop at Sevilla Santa Justa train station Jul 22 2:00 PM. Driver: Kyle.' },
+  { id:'c-airbnb-mrb', source:'confirmed', status:'booked', type:'lodging', city:'mrb', addedBy:'Alyssa',
+    title:'Marbella Airbnb — Casa Bambu Marbellamar', date:'Jul 17–22', time:'5 nights', cost:'', confirmation:'HM2DEZDCJW',
+    link:'https://drive.google.com/file/d/1LiOx4G-4zNOudoO-6VsORyzMo3y4CL1h21IKYYaevpQ/view',
+    notes:'Casa Bambu Marbellamar · Urbanización Marbellamar, 4, Marbella, Andalucía 29602. Check-in 4 PM Jul 17, check-out 11 AM Jul 22. Host +34 722 37 70 70.' }
 ];
 
 // Everything to display = confirmed (baked in) + live entries from the store.
