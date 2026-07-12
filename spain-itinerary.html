@@ -27,6 +27,7 @@
     --border-strong: rgba(43, 38, 32, 0.22);
     --bcn: #185fa5; --bcn-bg: #e6f1fb;
     --mrb: #0f6e56; --mrb-bg: #e1f5ee;
+    --grn: #6d3f9e; --grn-bg: #efe7f8;
     --sev: #854f0b; --sev-bg: #faeeda;
     --mad: #993c1d; --mad-bg: #faece7;
   }
@@ -187,6 +188,7 @@
   .city-badge svg { width: 26px; height: 26px; }
   .city-badge.bcn { background: var(--bcn-bg); color: var(--bcn); }
   .city-badge.mrb { background: var(--mrb-bg); color: var(--mrb); }
+  .city-badge.grn { background: var(--grn-bg); color: var(--grn); }
   .city-badge.sev { background: var(--sev-bg); color: var(--sev); }
   .city-badge.mad { background: var(--mad-bg); color: var(--mad); }
 
@@ -415,6 +417,7 @@
   .ov-collapse { text-align: right; margin-top: 8px; }
   .seg-bcn { background: var(--bcn); }
   .seg-mrb { background: var(--mrb); }
+  .seg-grn { background: var(--grn); }
   .seg-sev { background: var(--sev); }
   .seg-mad { background: var(--mad); }
   .overview-list { list-style: none; }
@@ -431,6 +434,7 @@
   .ov-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
   .dot-bcn { background: var(--bcn); }
   .dot-mrb { background: var(--mrb); }
+  .dot-grn { background: var(--grn); }
   .dot-sev { background: var(--sev); }
   .dot-mad { background: var(--mad); }
   .ov-name { font-weight: 500; font-size: 14px; flex: 1; }
@@ -645,6 +649,7 @@
 
   <div class="nav-row">
     <button class="nav-btn active" data-city="bcn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/></svg> Barcelona</button>
+    <button class="nav-btn" data-city="grn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21h18M5 21v-9l3-2 3 2v9M14 21V9l3-2 3 2v12M6 12h0M16 11h0"/></svg> Granada</button>
     <button class="nav-btn" data-city="mrb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="3"/><path d="M3 21c4-3 14-3 18 0M12 11v6"/></svg> Marbella</button>
     <button class="nav-btn" data-city="sev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6"/></svg> Sevilla</button>
     <button class="nav-btn" data-city="mad"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 19h18l-2-9-4 3-3-6-3 6-4-3z"/></svg> Madrid</button>
@@ -674,16 +679,30 @@
     <div id="days-bcn"></div>
   </section>
 
+  <!-- GRANADA -->
+  <section class="city-section" id="city-grn">
+    <div class="city-header">
+      <div class="city-badge grn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21h18M5 21v-9l3-2 3 2v9M14 21V9l3-2 3 2v12M6 12h0M16 11h0"/></svg></div>
+      <div>
+        <div class="city-title">Granada</div>
+        <div class="city-dates" id="dates-grn">Jul 17–19 · 2 nights</div>
+      </div>
+    </div>
+    <p class="city-intro">A two-night detour into the heart of Andalucía on the way to the coast. Granada is Moorish palaces, whitewashed hill quarters, tapas that still come free with a drink, and the Alhambra glowing above the city at sunset. Cooler evenings than the coast, and endlessly atmospheric.</p>
+    <div class="city-extras" id="extras-grn"></div>
+    <div id="days-grn"></div>
+  </section>
+
   <!-- MARBELLA -->
   <section class="city-section" id="city-mrb">
     <div class="city-header">
       <div class="city-badge mrb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="3"/><path d="M3 21c4-3 14-3 18 0M12 11v6"/></svg></div>
       <div>
         <div class="city-title">Marbella</div>
-        <div class="city-dates" id="dates-mrb">Jul 17–22 · 5 nights · Costa del Sol base</div>
+        <div class="city-dates" id="dates-mrb">Jul 19–22 · 3 nights · Costa del Sol base</div>
       </div>
     </div>
-    <p class="city-intro">Your anchor. Five nights on the Costa del Sol with a car gives you serious flexibility — beach days, day trips, late lunches, early swims. Don't over-programme it. The Mediterranean in July is perfect.</p>
+    <p class="city-intro">Your Costa del Sol base for three nights after Granada — beach days, a mountain day trip, late lunches and early swims. The Mediterranean in July is perfect; don't over-programme it.</p>
     <div class="city-extras" id="extras-mrb"></div>
     <div id="days-mrb"></div>
   </section>
@@ -821,7 +840,7 @@
   <div class="footer">
     Confirmation SKHETT · Kyle, Alyssa, Olivia, Leo & Kennedy Kochtanek<br>
     Tap any city above, then tap a day to expand it.<br>
-    <span class="build-stamp">Last published: 10 Jul 2026 · 8:10 PM CDT · v34</span>
+    <span class="build-stamp">Last published: 12 Jul 2026 · 11:12 AM CDT · v35</span>
   </div>
 
 </div>
@@ -879,42 +898,43 @@ var DATA = {
       {t:'Afternoon', i:'beach', n:'Barceloneta Beach', d:'Easy metro ride. Let the kids burn energy in the water while you decompress. Paella at a beachfront chiringuito.'},
       {t:'Evening', i:'walk', n:'Barceloneta neighbourhood', d:'Seafood-heavy, casual dinner with great energy. Kids welcome everywhere.'}
     ], tip:'<strong>Tip:</strong> July heat peaks 2–4pm. Plan the beach for that window, sightsee in the morning and evening.<br>🌸 <strong>Ali&rsquo;s picks:</strong> Bunkers del Carmel for sunset (~9–9:30pm); dinner nearby at La Pepita, Parking Pizza, or Bodega Sepúlveda.'},
-    { id:'d3', date:'Jul 17', label:'Fly to Málaga · drive to Marbella', tag:'travel', acts:[
-      {t:'12:55pm', i:'plane_departure', n:'Fly BCN → AGP (Málaga)', d:'Vueling VY2113 (booking EL18TG), direct — Barcelona 12:55 → Málaga 14:40. All 5 booked (seats 7B–7F), checked bags included. Then pick up the Enterprise rental car (Volvo XC90, conf 397232796) at Málaga airport, 3:00 PM.'},
-      {t:'Afternoon', i:'car', n:'Drive to Marbella', d:'~45 min along the AP-7 coastal highway, Mediterranean on your left. Stop at a roadside chiringuito for lunch if hungry.'},
-      {t:'Afternoon', i:'estate', n:'Check in & orient', d:'Drop bags, find the beach, grocery run if you\'re in a villa. Marbella\'s old town is worth an evening stroll — whitewashed lanes and the Plaza de los Naranjos.'}
+    { id:'d3', date:'Jul 17', label:'Fly to Málaga · drive to Granada', tag:'travel', acts:[
+      {t:'12:55pm', i:'plane_departure', n:'Fly BCN → AGP (Málaga)', d:'Vueling VY2113 (booking EL18TG), direct — Barcelona 12:55 → Málaga 14:40. All 5 booked (seats 7B–7F), checked bags included. Pick up the Enterprise rental car (Volvo XC90, conf 397232796) at Málaga airport, 3:00 PM.'},
+      {t:'Afternoon', i:'car', n:'Drive to Granada (~1.5 hrs)', d:'Head inland from Málaga on the A-45/A-92 into the hills — rolling olive country the whole way.'},
+      {t:'Evening', i:'estate', n:'Check in · Granada', d:'Sophisticated flat near the Cathedral (Genteel Home, conf HMWK4C3RYS). Drop bags, then wander into the centre for your first free-tapas dinner — Granada still gives a tapa with every drink.'}
     ]}
   ],
+  grn: [
+    { id:'g1', date:'Jul 18', label:'The Alhambra', tag:'culture', acts:[
+      {t:'Morning', i:'castle', n:'The Alhambra & Generalife', d:'One of the greatest sights in the world — the Nasrid Palaces, Court of the Lions, and the Generalife gardens. Go early for cooler air. Your ticket has a strict timed slot for the Nasrid Palaces.'},
+      {t:'Midday', i:'food', n:'Lunch + siesta', d:'Escape the midday heat with a long lunch and a rest at the apartment.'},
+      {t:'Late afternoon', i:'walk', n:'Albaicín & Mirador San Nicolás', d:'Wander the whitewashed Moorish quarter uphill to the Mirador de San Nicolás for the classic view of the Alhambra against the Sierra Nevada.'},
+      {t:'Evening', i:'music', n:'Sacromonte / tapas crawl', d:'Free tapas with every drink in the centre, or head to Sacromonte for cave-house flamenco. Granada evenings are magic.'}
+    ], tip:'<strong>Alhambra tip:</strong> Timed tickets are the #1 thing to book for this whole trip — they sell out weeks ahead in July, need photo ID, and the Nasrid Palaces have a fixed entry time. Buy on the official site (tickets.alhambra-patronato.es).'},
+    { id:'g2', date:'Jul 19', label:'Granada → Marbella', tag:'travel', acts:[
+      {t:'Morning', i:'coffee', n:'Slow Granada morning', d:'Breakfast, one last wander, and check out by 11am.'},
+      {t:'Midday', i:'car', n:'Drive to Marbella (~1.5–2 hrs)', d:'Down to the coast on the A-7. Optional detour: Nerja & Frigiliana (Balcón de Europa and a pretty white village) make a lovely leg-stretch on the way.'},
+      {t:'Afternoon', i:'estate', n:'Check in · Marbella', d:'Casa Bambu Marbellamar (Finest Rentals, conf HM2DEZDCJW), check-in 4pm. Drop bags and hit the beach.'},
+      {t:'Evening', i:'walk', n:'Marbella old town', d:'The casco antiguo — Plaza de los Naranjos, whitewashed lanes, ice cream. Dinner on the Paseo Marítimo as the Spanish families come out at 9pm.'}
+    ], tip:'🌸 <strong>Ali&rsquo;s picks (Nerja detour):</strong> Reserve a Bali bed / beach chairs in advance at Lamalaka (Nerja); dinner at The Garden in Frigiliana.'}
+  ],
   mrb: [
-    { id:'d4', date:'Jul 18', label:'Marbella beach day', tag:'beach', acts:[
-      {t:'Morning', i:'sunrise', n:'Playa de la Fontanilla', d:'Marbella\'s most popular town beach. Wide, sandy, calm — ideal for kids. Loungers for hire. Arrive by 9am for a good spot in peak July.'},
-      {t:'Midday', i:'food', n:'Chiringuito lunch on the beach', d:'Grilled fish, espetos (sardines on a skewer), cold beer and Fanta Limón for the kids. Peak Spain.'},
-      {t:'Afternoon', i:'walk', n:'Old Town stroll', d:'The casco antiguo is small and walkable. Plaza de los Naranjos, whitewashed lanes, ice cream, window shopping.'},
-      {t:'Evening', i:'moon', n:'Paseo Marítimo walk', d:'The promenade comes alive at dusk. Spanish families out in full force with kids — you\'ll fit right in at 9pm.'}
+    { id:'d6', date:'Jul 20', label:'Beach & Puerto Banús', tag:'beach', acts:[
+      {t:'Morning', i:'beach', n:'Playa de Nagüeles', d:'A quieter beach — clear water, less crowded, pine trees. 5 min drive from central Marbella, a family favourite.'},
+      {t:'Afternoon', i:'sail', n:'Puerto Banús', d:'5 min west. The mega-yacht marina is outrageously fun to walk. Ice cream, window shopping, watching the boats. Kid-friendly despite the glam.'},
+      {t:'Late afternoon', i:'swim', n:'Beach club afternoon', d:'Family-friendly pools and sun beds around Puerto Banús — La Sala by the Sea or Sisu\'s beach area.'}
     ], tip:'🌸 <strong>Ali&rsquo;s pick:</strong> Cortijo Luidze — the &ldquo;restaurant with bunnies&rdquo; the kids will love.'},
-    { id:'d5', date:'Jul 19', label:'Day trip: Ronda', tag:'excursion', acts:[
+    { id:'d5', date:'Jul 21', label:'Day trip: Ronda', tag:'excursion', acts:[
       {t:'8:30am', i:'car', n:'Drive to Ronda', d:'~1hr through the mountains on the A-397. Spectacular winding road. Pack snacks for the kids.'},
       {t:'10am', i:'bridge', n:'Puente Nuevo', d:'The iconic bridge spanning a 120m gorge. Walk across and look down — dramatic and completely safe. One of the most memorable views in Spain.'},
       {t:'Late morning', i:'walk', n:'Old town & La Ciudad', d:'Wander the ancient Arab quarter below the bridge. Ronda is one of Spain\'s oldest cities — extraordinary cliff-edge views.'},
       {t:'1pm', i:'food', n:'Lunch in Ronda', d:'Rabo de toro (oxtail stew) is the local speciality. Try Restaurante Albacara or a terrace near the bridge for the view.'},
       {t:'3pm', i:'car', n:'Drive back to Marbella', d:'Back for a late afternoon swim before dinner. A full but not exhausting day.'}
     ], tip:'<strong>Ronda tip:</strong> Go early — it gets extremely hot and crowded by midday in July. Being there by 10am means the best viewpoints to yourselves.'},
-    { id:'d6', date:'Jul 20', label:'Beach & Puerto Banús', tag:'beach', acts:[
-      {t:'Morning', i:'beach', n:'Playa de Nagüeles', d:'A quieter alternative to Fontanilla — clear water, less crowded, pine trees. 5 min drive from central Marbella, a family favourite.'},
-      {t:'Afternoon', i:'sail', n:'Puerto Banús', d:'5 min drive west. The mega-yacht marina is outrageously fun to walk. Ice cream, window shopping, watching the boats. Kid-friendly despite the glam reputation.'},
-      {t:'Late afternoon', i:'swim', n:'Beach club afternoon', d:'Several clubs around Puerto Banús have family-friendly pools and sun beds — La Sala by the Sea or Sisu\'s beach area.'}
-    ]},
-    { id:'d7', date:'Jul 21', label:'Day trip: Nerja & Frigiliana', tag:'excursion', acts:[
-      {t:'8:30am', i:'car', n:'Drive to Frigiliana (45 min)', d:'One of the most beautiful white villages in Andalucía. Steep cobbled lanes, flowerpots, local honey and ceramics.'},
-      {t:'9:30am', i:'home', n:'Explore Frigiliana', d:'Give it a couple of hours. The Moorish barrio at the top is spectacular. Buy miel de caña (sugarcane honey) — a great souvenir.'},
-      {t:'Noon', i:'pin', n:'Drive down to Nerja (10 min)', d:'The Balcón de Europa viewpoint is stunning — the Mediterranean in both directions. Grab ice cream from ALBI.'},
-      {t:'Afternoon', i:'beach', n:'Burriana Beach, Nerja', d:'Wide, sandy, the best beach in the area. Easy walk from the Balcón. Lunch at a chiringuito on the sand.'},
-      {t:'Late afternoon', i:'car', n:'Drive back to Marbella (~1hr)', d:'Easy coastal highway. Stop at a supermarket if you want a relaxed dinner in.'}
-    ], tip:'🌸 <strong>Ali&rsquo;s picks:</strong> Reserve a Bali bed / beach chairs in advance at Lamalaka (Nerja); dinner at The Garden in Frigiliana.'},
     { id:'d8', date:'Jul 22', label:'Final beach morning · drive to Sevilla', tag:'travel', acts:[
       {t:'Morning', i:'beach', n:'Last beach morning', d:'One final dip. Check out, load the car, grab coffee and pastries from a local café.'},
       {t:'Late morning', i:'car', n:'Drive Marbella → Sevilla (~2.5hrs)', d:'A-92 north through the Andalucían countryside — rolling hills and olive groves. Stop in Antequera for coffee if needed, a lovely town en route.'},
-      {t:'Afternoon', i:'arch', n:'Arrive Sevilla · check in', d:'Park at the hotel and leave the car there — Sevilla\'s centre is extremely walkable and driving the old city is a nightmare.'},
+      {t:'Afternoon', i:'arch', n:'Return car · arrive Sevilla', d:'Drop the Enterprise car at Sevilla Santa Justa (by 2pm), then check in — Sevilla\'s centre is extremely walkable and driving the old city is a nightmare.'},
       {t:'Evening', i:'walk', n:'Santa Cruz at dusk', d:'Ease in with a stroll through the old Jewish quarter\'s lanes and orange-tree squares, then a relaxed first tapas dinner.'}
     ]}
   ],
@@ -965,12 +985,13 @@ var DATA = {
 var TRIP_START = new Date(2026, 6, 15); // Jul 15, 2026
 var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 var CITY_META = {
-  bcn:{ color:'bcn' }, mrb:{ color:'mrb', suffix:'Costa del Sol base' },
+  bcn:{ color:'bcn' }, grn:{ color:'grn' }, mrb:{ color:'mrb', suffix:'Costa del Sol base' },
   sev:{ color:'sev' }, mad:{ color:'mad' }
 };
 var DEFAULT_OUTLINE = [
   { key:'bcn', name:'Barcelona', nights:2 },
-  { key:'mrb', name:'Marbella',  nights:5 },
+  { key:'grn', name:'Granada',   nights:2 },
+  { key:'mrb', name:'Marbella',  nights:3 },
   { key:'sev', name:'Sevilla',   nights:3 },
   { key:'mad', name:'Madrid',    nights:3 }
 ];
@@ -1104,7 +1125,7 @@ function renderDays(city) {
   document.getElementById('days-'+city).innerHTML = html;
 }
 
-['bcn','mrb','sev','mad'].forEach(renderDays);
+['bcn','grn','mrb','sev','mad'].forEach(renderDays);
 
 document.querySelectorAll('.nav-btn').forEach(function(btn) {
   btn.addEventListener('click', function() {
@@ -1167,7 +1188,7 @@ var FIREBASE_CONFIG = {
   appId: ""
 };
 
-var CITY_NAMES = { general:'General', bcn:'Barcelona', mrb:'Marbella', sev:'Sevilla', mad:'Madrid' };
+var CITY_NAMES = { general:'General', bcn:'Barcelona', grn:'Granada', mrb:'Marbella', sev:'Sevilla', mad:'Madrid' };
 var CITY_ORDER = ['general','bcn','mrb','sev','mad'];
 var TYPE_LABELS = { flight:'Flight', lodging:'Lodging', transport:'Train / Car', activity:'Activity', dining:'Dining' };
 var STATUS_LABELS = { suggestion:'Idea', considering:'Considering', booked:'Booked ✓' };
@@ -1195,6 +1216,15 @@ var SUGGESTIONS = {
       ['Activity', "Sagrada Família — book the first morning slot the moment tickets open, and add tower access for the older kids."],
       ['Activity', "Park Güell monumental zone — reserve an early slot the same morning, before the heat builds."],
       ['Dining', "Beachfront paella at Barceloneta one day; tapas in El Born for an evening. Reserve a table for 5 a day ahead."]
+    ]
+  },
+  grn: {
+    note: "Two nights in Granada — the Alhambra is the whole reason to come, so lock its tickets first.",
+    items: [
+      ['Activity', "Alhambra + Generalife — book timed tickets weeks ahead on the official site; they sell out in July. Bring photo ID; the Nasrid Palaces have a strict entry time."],
+      ['Activity', "Sunset at Mirador de San Nicolás in the Albaicín — the classic Alhambra-and-Sierra-Nevada view."],
+      ['Dining', "Lean into Granada's free-tapas tradition — order a drink, get a plate. Bar Los Diamantes and the Navas street bars are easy with kids."],
+      ['Activity', "Cave-house flamenco in Sacromonte for an unforgettable evening (optional, later show)."]
     ]
   },
   mrb: {
@@ -1317,10 +1347,14 @@ var CONFIRMED_BOOKINGS = [
     title:'Rental car — Enterprise (Málaga → Sevilla)', date:'Jul 17–22', time:'Pick up 3:00pm', cost:'$487 (€428.56)', confirmation:'397232796',
     link:'https://drive.google.com/file/d/1kTG6BUKN8njkEDvJWcE4bv4RbExLMUM5/view',
     notes:'Luxury SUV (Volvo XC90 or similar), automatic, unlimited mileage. Pick up Málaga Costa del Sol Airport Jul 17 3:00 PM; drop at Sevilla Santa Justa train station Jul 22 2:00 PM. Driver: Kyle.' },
+  { id:'c-airbnb-grn', source:'confirmed', status:'booked', type:'lodging', city:'grn', addedBy:'Kyle',
+    title:'Granada Airbnb — Flat near the Cathedral', date:'Jul 17–19', time:'2 nights', cost:'$371.56', confirmation:'HMWK4C3RYS',
+    link:'https://drive.google.com/file/d/1Z82Kj-e3y7C338cSFQKq4x12eFf7Y0yX/view',
+    notes:'Sophisticated Flat Near Cathedral (Horno Marina 6), hosted by Genteel Home · Calle Horno Marina, 3, 2ºA, 18001 Granada. Check-in 3 PM Jul 17, check-out 11 AM Jul 19. Host greets you. 2 adults + 3 children, non-refundable. Drive from Málaga airport ~1.5 hrs after the Vueling flight lands.' },
   { id:'c-airbnb-mrb', source:'confirmed', status:'booked', type:'lodging', city:'mrb', addedBy:'Alyssa',
     title:'Marbella Airbnb — Casa Bambu Marbellamar', date:'Jul 19–22', time:'3 nights', cost:'$3,146.43', confirmation:'HM2DEZDCJW',
     link:'https://drive.google.com/file/d/1LwxFE3DsgFNbxFC49sgRj6GnT74N1MTK/view',
-    notes:'Casa Bambu Marbellamar Townhouse, hosted by Finest Rentals · Urbanización Marbellamar, 4, Marbella, Andalucía 29602. Check-in 4 PM Jul 19, check-out 11 AM Jul 22. Host greets you; call +34 722 37 70 70. 2 adults + 3 children, non-refundable. ⚠️ This covers only Jul 19–22 — but you arrive Marbella Jul 17, so the nights of Jul 17 & 18 still need lodging (or the plan needs adjusting).' }
+    notes:'Casa Bambu Marbellamar Townhouse, hosted by Finest Rentals · Urbanización Marbellamar, 4, Marbella, Andalucía 29602. Check-in 4 PM Jul 19, check-out 11 AM Jul 22. Host greets you; call +34 722 37 70 70. 2 adults + 3 children, non-refundable. Follows the 2 nights in Granada (Jul 17–19), so lodging is now continuous.' }
 ];
 
 // Everything to display = confirmed (baked in) + live entries from the store.
@@ -1715,7 +1749,7 @@ function renderCityExtras(ck) {
 }
 
 function renderAllCityExtras() {
-  ['bcn','mrb','sev','mad'].forEach(renderCityExtras);
+  ['bcn','grn','mrb','sev','mad'].forEach(renderCityExtras);
 }
 renderAllCityExtras();
 
